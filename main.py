@@ -42,11 +42,11 @@ def get_bot_response():
             print(f"An error occurred in {exp_name}: {str(e)}")
 
     experiments = [
-        ("Generic_Cypher", QG.generic_cypther, [question]),
-        ("Graph_Cypher_QA", QG.graph_cypher_qa, [question]),
-        ("Graph_Cypher_QA_with_Graph_in_Pinecone", QG.graph_cypher_qa_pinecone, [question, "context", "graph_02"]),
-        ("Graph_Cypher_QA_with_PDF_in_Pinecone", QG.graph_cypher_qa_pinecone, [question, "text", "unilever"]),
-        ("Graph_Cypher_QA_with_Knowledge_Triples", QG.graph_cypher_qa_knowledge_triples, [question]),
+        ("Generic_Cypher", QG.generic_cypher, question),
+        ("Graph_Cypher_QA", QG.graph_cypher_qa, question),
+        ("Graph_Cypher_QA_with_Graph_in_Pinecone", QG.graph_qa_graph_pinecone, question,"graph_02", "context"),
+        ("Graph_Cypher_QA_with_PDF_in_Pinecone", QG.graph_qa_pdf_pinecone, question, "unilever", "text"),
+        ("Graph_Cypher_QA_with_Knowledge_Triples", QG.graph_qa_knowledge_triples, question),
     ]
 
     threads = [Thread(target=run_exp, args=exp) for exp in experiments]

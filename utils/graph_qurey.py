@@ -42,8 +42,11 @@ class QueryGraph():
         self.embeddings = OpenAIEmbeddings()
         self.driver = GraphDatabase.driver(neo4j_url, auth=(neo4j_user, neo4j_password))
 
+        pinecone.init(api_key=self.pinecone_api_key,environment=self.pinecone_env_name)
+        self.index = pinecone.Index(self.pinecone_index_name)
+
     # Experiment 2: Generic Cypher
-    def generic_cypther(self, query):
+    def generic_cypher(self, query):
         self.db = Neo4jGPTQuery(
                                 url=self.neo4j_url,
                                 user=self.neo4j_user,
@@ -60,27 +63,28 @@ class QueryGraph():
                             username=self.neo4j_user,
                             password=self.neo4j_password)
         
-        chatbot = ChatOpenAI(
-                            openai_api_key=self.openai_key,
-                            temperature=0,
-                            )
-        
         chain = GraphCypherQAChain.from_llm(ChatOpenAI(temperature=0), graph=graph, verbose=True,)
         response = chain.run(question)
         return response
     
     # Experment 4: QAChian-Pinecone
-    def graph_cypher_qa_pinecone(self, question, my_namespace="graph_02", text_key="context", topK=10,):
-        pinecone.init(api_key=self.pinecone_api_key,environment=self.pinecone_env_name)
-        index = pinecone.Index(self.pinecone_index_name)
-        vectorstore = Pinecone(index, self.embeddings.embed_query, text_key, namespace=my_namespace)
+    def graph_qa_graph_pinecone(self, question, my_namespace="graph_02", text_key="context", topK=10,):
+        vectorstore = Pinecone(self.index , self.embeddings.embed_query, text_key, namespace=my_namespace)
         docs = vectorstore.similarity_search(question, k=topK)
         chain = load_qa_with_sources_chain(OpenAI(temperature=0), chain_type="stuff")
         response = chain({"input_documents": docs, "question": question}, return_only_outputs=True)
         return response["output_text"]
+    
+    def graph_qa_pdf_pinecone(self, question, my_namespace="unilever", text_key="text", topK=10,):
+        vectorstore = Pinecone(self.index , self.embeddings.embed_query, text_key, namespace=my_namespace)
+        docs = vectorstore.similarity_search(question, k=topK)
+        chain = load_qa_with_sources_chain(OpenAI(temperature=0), chain_type="stuff")
+        response = chain({"input_documents": docs, "question": question}, return_only_outputs=True)
+        return response["output_text"]
+    
 
     # Experment 5: GraphQAChain with Knowledge Triples
-    def graph_cypher_qa_knowledge_triples(self, question, graph_pth="ps-graph.gml"):
+    def graph_qa_knowledge_triples(self, question, graph_pth="ps-graph.gml"):
         loaded_graph = NetworkxEntityGraph.from_gml(graph_pth)
         chain = GraphQAChain.from_llm(OpenAI(temperature=0), graph=loaded_graph, verbose=True)
         response = chain.run(question)
