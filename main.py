@@ -30,24 +30,46 @@ def get_bot_response():
                     openai_key, pinecone_api_key, pinecone_env_name, pinecone_index_name)
     
     response = {}
-    # ## Exp 2: Generic Cypher
-    response["Generic_Cypher"] = QG.generic_cypther(question)
-    print ("........Finished Generic Cypher........")
 
-    # ## Exp 3: Graph Cypher QA
-    response["Graph_Cypher_QA"] = QG.graph_cypher_qa(question)
-    print ("........Finished Graph_Cypher_QA........")
+    try:
+        # Exp 2: Generic Cypher
+        response["Generic_Cypher"] = QG.generic_cypther(question)
+        print ("........Finished Generic Cypher........")
+    except Exception as e:
+        response["Generic_Cypher"] = str(e)
+        print(f"An error occurred in Generic Cypher: {str(e)}")
 
-    # ## Exp 4: Graph Cypher QA with Sources (Pinecone)
-    response["Graph_Cypher_QA_with_Graph_in_Pinecone"] = QG.graph_cypher_qa_pinecone(question, text_key="context", my_namespace="graph_02")
-    print ("........Finished Graph_Cypher_QA_with_Graph_in_Pinecone........")
+    try:
+        # Exp 3: Graph Cypher QA
+        response["Graph_Cypher_QA"] = QG.graph_cypher_qa(question)
+        print ("........Finished Graph_Cypher_QA........")
+    except Exception as e:
+        response["Graph_Cypher_QA"] = str(e)
+        print(f"An error occurred in Graph Cypher QA: {str(e)}")
 
-    response["Graph_Cypher_QA_with_PDF_in_Pinecone"] = QG.graph_cypher_qa_pinecone(question, text_key="text", my_namespace="unilever")
-    print ("........Finished Graph_Cypher_QA_with_PDF_in_Pinecone........")
+    try:
+        # Exp 4: Graph Cypher QA with Sources (Pinecone)
+        response["Graph_Cypher_QA_with_Graph_in_Pinecone"] = QG.graph_cypher_qa_pinecone(question, text_key="context", my_namespace="graph_02")
+        print ("........Finished Graph_Cypher_QA_with_Graph_in_Pinecone........")
+    except Exception as e:
+        response["Graph_Cypher_QA_with_Graph_in_Pinecone"] = str(e)
+        print(f"An error occurred in Graph Cypher QA with Graph in Pinecone: {str(e)}")
 
-    # ## Exp 5: Graph Cypher QA with Triples
-    response["Graph_Cypher_QA_with_Knowledge_Triples"] = QG.graph_cypher_qa_knowledge_triples(question)
-    print ("........Finished Graph_Cypher_QA_with_Knowledge_Triples........")
+    try:
+        response["Graph_Cypher_QA_with_PDF_in_Pinecone"] = QG.graph_cypher_qa_pinecone(question, text_key="text", my_namespace="unilever")
+        print ("........Finished Graph_Cypher_QA_with_PDF_in_Pinecone........")
+    except Exception as e:
+        response["Graph_Cypher_QA_with_PDF_in_Pinecone"] = str(e)
+        print(f"An error occurred in Graph Cypher QA with PDF in Pinecone: {str(e)}")
+
+    try:
+        # Exp 5: Graph Cypher QA with Triples
+        response["Graph_Cypher_QA_with_Knowledge_Triples"] = QG.graph_cypher_qa_knowledge_triples(question)
+        print ("........Finished Graph_Cypher_QA_with_Knowledge_Triples........")
+    except Exception as e:
+        response["Graph_Cypher_QA_with_Knowledge_Triples"] = str(e)
+        print(f"An error occurred in Graph Cypher QA with Knowledge Triples: {str(e)}")
+
 
     return jsonify(response) 
 
