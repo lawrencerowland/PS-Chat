@@ -4,7 +4,6 @@ import openai
 from dotenv import load_dotenv
 import re
 
-
 node_properties_query = """
 CALL apoc.meta.data()
 YIELD label, other, elementType, type, property
@@ -43,7 +42,6 @@ def schema_text(node_props, rel_props, rels):
   Make sure to respect relationship types and directions
   """
 
-
 def fetch_cypher_query(text):
     match = re.search('```\n(.+?)\n```', text, re.DOTALL)
     if match:
@@ -73,10 +71,10 @@ class Neo4jGPTQuery:
         Instructions:
         Use only the provided relationship types and properties.
         Do not use any other relationship types or properties that are not provided.
+        Do not include any explanations or apologies in your responses.
         If you cannot generate a Cypher statement based on the provided schema, explain the reason to the user.
         Schema:
         {self.schema}
-
         Note: Do not include any explanations or apologies in your responses.
         """
 
@@ -129,7 +127,7 @@ class Neo4jGPTQuery:
                         "role": "user",
                         "content": f"""This query returns an error: {str(e)} 
                         Please give me a improved query that works WITHOUT any explanations or apologies. 
-                        Just output the Neo4j cypther!!!!""",
+                        Use pair of ``` to wrap your query. """,
                     },
                 ],
                 retry=False

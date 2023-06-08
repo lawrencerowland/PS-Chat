@@ -54,7 +54,8 @@ class QueryGraph():
                                 openai_api_key=self.openai_key)
         
         response = self.db.run(query)
-        return list_to_string(response)
+        response =list_to_string(response)
+        return response
     
     # Experiment 3: Graph Cypher QA
     def graph_cypher_qa(self, question):
@@ -67,7 +68,7 @@ class QueryGraph():
         response = chain.run(question)
         return response
     
-    # Experment 4: QAChian-Pinecone
+    # Experment 4: QAChian-graph-Pinecone
     def graph_qa_graph_pinecone(self, question, my_namespace="graph_02", text_key="context", topK=10,):
         vectorstore = Pinecone(self.index , self.embeddings.embed_query, text_key, namespace=my_namespace)
         docs = vectorstore.similarity_search(question, k=topK)
@@ -75,7 +76,8 @@ class QueryGraph():
         response = chain({"input_documents": docs, "question": question}, return_only_outputs=True)
         return response["output_text"]
     
-    def graph_qa_pdf_pinecone(self, question, my_namespace="unilever", text_key="text", topK=10,):
+    # Experment 4: QAChian-pdf-Pinecone
+    def graph_qa_pdf_pinecone(self, question, my_namespace="unilever", text_key="text", topK=5):
         vectorstore = Pinecone(self.index , self.embeddings.embed_query, text_key, namespace=my_namespace)
         docs = vectorstore.similarity_search(question, k=topK)
         chain = load_qa_with_sources_chain(OpenAI(temperature=0), chain_type="stuff")
