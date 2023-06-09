@@ -3,7 +3,7 @@
 <head>
 
 	<!-- seo related -->
-	<title>PS Chatbot V1.0</title>
+	<title>PS Chatbot Internal Testing</title>
 
 	<!-- meta related -->
 	<meta charset="utf-8">
@@ -33,11 +33,16 @@
 				<div class="chat_window">
 
 					<div class="top_menu">
-						<div class="title">Projecting Success</div>
+						<div class="title">Chat</div>
 					</div>
 
 					<!-- dynamically rendered -->
 					<ul class="messages"></ul>
+					
+					<!-- loading spinner -->
+					<div id="loading_spinner" style="display: none;">
+						<div class="spinner"></div>
+					</div>
 
 					<!-- input -->
 					<div class="bottom_wrapper">
@@ -65,12 +70,12 @@
 							<div class="panel-heading">
 								<h4 class="panel-title">
 									<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion"
-										href="#collapse1">Hint</a>
+										href="#collapse1">Examples</a>
 								</h4>
 							</div>
 							<div id="collapse1" class="panel-collapse collapse in">
 								<div class="panel-body">
-									Example Questions: 
+									Example Questions: <br>
 									1. What types of business values that Unilever create? <br>
 									2. How many types of Strategy_themes? Please give the list of their names. <br>
 									3. How many types of areas of support? Please give the list of their names. <br>

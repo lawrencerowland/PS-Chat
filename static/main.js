@@ -75,9 +75,7 @@ $('#msg_input').keypress(function (e) {
     }
 });
 
-/**
- * Get input from user and show it on screen on button click.
- */
+
 /**
  * Get input from user and show it on screen on button click.
  */
@@ -88,16 +86,22 @@ $('#send_button').on('click', function (e) {
     showUserMessage(userMsg);
     $('#msg_input').val('');
 
+    // show loading spinner
+    $('#loading_spinner').show();
+
     // get response from server
     $.ajax({
         url: '/get',
         method: 'POST',
         data: { msg: userMsg },
         success: function(data) {
+            // hide loading spinner
+            $('#loading_spinner').hide();
+
             // parse JSON response and extract message(s) by key
             for (var key in data) {
                 if (data.hasOwnProperty(key)) {
-                    let sectionTitle = key;
+                    let sectionTitle = '<strong>' + key + '</strong>';
                     let sectionResponse = data[key];
 
                     setTimeout(function () {
@@ -107,12 +111,17 @@ $('#send_button').on('click', function (e) {
             }
         },
         error: function() {
+            // hide loading spinner
+            $('#loading_spinner').hide();
+
             setTimeout(function () {
                 showBotMessage('Sorry, I am currently unable to provide a response.');
             }, 300);
         }
     });
 });
+
+
 
 
 /**
