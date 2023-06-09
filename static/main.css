@@ -129,7 +129,7 @@ body {
 
 .messages .message.right .avatar {
 	float: right;
-	background: url('./img/guy.jpg');
+	background: url('./img/picon.jpg');
 }
 
 .messages .message.right .text_wrapper {
