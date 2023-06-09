@@ -78,6 +78,9 @@ $('#msg_input').keypress(function (e) {
 /**
  * Get input from user and show it on screen on button click.
  */
+/**
+ * Get input from user and show it on screen on button click.
+ */
 $('#send_button').on('click', function (e) {
     var userMsg = $('#msg_input').val();
 
@@ -91,18 +94,17 @@ $('#send_button').on('click', function (e) {
         method: 'POST',
         data: { msg: userMsg },
         success: function(data) {
-            var response = "";
-
-            // assuming you want to parse JSON response and extract message(s)
+            // parse JSON response and extract message(s) by key
             for (var key in data) {
                 if (data.hasOwnProperty(key)) {
-                    response += data[key];
+                    let sectionTitle = key;
+                    let sectionResponse = data[key];
+
+                    setTimeout(function () {
+                        showBotMessage(sectionTitle + ': ' + sectionResponse);
+                    }, 300);
                 }
             }
-
-            setTimeout(function () {
-                showBotMessage(response);
-            }, 300);
         },
         error: function() {
             setTimeout(function () {
@@ -111,6 +113,7 @@ $('#send_button').on('click', function (e) {
         }
     });
 });
+
 
 /**
  * Returns a random string. Just to specify bot message to the user.
