@@ -91,3 +91,37 @@ class QueryGraph():
         chain = GraphQAChain.from_llm(OpenAI(temperature=0), graph=loaded_graph, verbose=True)
         response = chain.run(question)
         return response
+    
+    # Optimissed version of Cyher Query
+    def optimised_cyher(self, question, my_namespace="graph", text_key="name", topK=20):
+        vectorstore = Pinecone(self.index , self.embeddings.embed_query, text_key, namespace=my_namespace)
+
+        docs = vectorstore.similarity_search(question, k=topK)
+
+        # Get the related node names, node types and edges
+        related_node_names = ""
+        related_node_types = ""
+        related_edges = ""
+        for d in docs: 
+            if d.metadata["info_type"] == "node_names":
+                related_node_names+=d.page_content + ", "
+            
+            if d.metadata["info_type"] == "node_types":
+                related_node_types+=d.page_content + ", "
+            
+            if d.metadata["info_type"] == "edges":
+                related_edges+=d.page_content + ", "
+
+        # Build additional hint
+        additional_hint = f"""Hint: Please refer the names of nodes:{related_node_names} or the labels of nodes: {related_node_types} or the edges type: {related_edges} if necessary"""
+
+        # Enquiry the database as graph cypher QA
+        graph = Neo4jGraph(
+                            url=self.neo4j_url,
+                            username=self.neo4j_user,
+                            password=self.neo4j_password)
+        
+        chain = GraphCypherQAChain.from_llm(ChatOpenAI(temperature=0), graph=graph, verbose=True,)
+        response = chain.run(question + additional_hint)
+
+        return response
