@@ -123,39 +123,57 @@ $('#send_button').on('click', function (e) {
 
 
 
-var questions = [
-	"What are the strategic dependencies of the 'SAP_re_implementation-programme_2' project?",
-    "Which mitigation strategies are linked to the 'Poor_project_execution' risk?",
-    "What is the supply chain strategy associated with the 'Digital_Supply_Chain:' strategy theme?",
-    "Which programme is associated with the 'Winning_with_brands_and_innovation' service offering?",
-    "What are the risks associated with the 'Business_disruption_' project risk?",
-    "Which areas of support are provided for the 'Org._transformation_programme_1'?",
-    "What are the value creation models for the 'Value_theme' strategy?",
-    "How is the 'Acquisition_programme_1' linked with the 'Partnerships_for_the_future:' strategy theme?",
-    "What are the strategic dependencies for the 'Net_Revenue_Mgt_programme'?",
-    "What is the supply chain strategy for the '3._Logistics' value Unilever creates?",
-    "How does the 'Innovation_theme' connect with our service offerings?",
-    "What risks are associated with the 'Brexit_Programme' and what are their mitigations?",
-    "How is 'Executive_sponsorship' involved in 'Business_Transformation_themes'?",
-    "How does the 'Talent_&_Capabilities:' strategy theme relate to the 'UK_Operations'?",
-    "What Q4 triggers are associated with the 'Systems_integration_programme'?",
-    "How does the '5S_Smart_Programme' contribute to the 'Value_Unilever_create'?",
-    "Which programmes are connected to the 'Responsible_and_Sustainable_Living__theme' strategy theme?",
-    "What is the role of 'Steering_group' in the context of 'Project' node?",
-    "How is the 'Agility_for_a_Changing_Market:_' strategy theme related to 'Our_Service_Offerings'?",
-    "Which 'Areas_of_support' are involved in the 'Data_management_enhancement_programme_2'?",
-	"What are project risks associated with your supply chain strategies?",
-    "What types of business value does Unilever create?",
-    "How many types of strategy themes are there? Could you please provide their names?",
-    "How many types of support areas are there? Could you please provide their names?",
-    "How many types of mitigation are there? Could you please provide their names?"
+var low_level_questions = [
+    "What are the strategic dependencies of our ongoing technological implementation projects?",
+    "Which mitigation strategies are linked to the risk of poor project execution?",
+    "What is our supply chain strategy associated with digital transformation?",
+    "Which programmes are associated with winning through brand innovation and market competitiveness?",
+    "What are the risks associated with potential business disruptions?",
+    "Which areas of support are provided for our ongoing organizational transformation programmes?",
+    "What models are we using for creating strategic value?",
+    "How are our acquisition programmes linked with future partnerships strategies?",
+    "What are the strategic dependencies for our net revenue management programme?",
+    "What is our supply chain strategy for our logistics operations?",
+    "How does innovation connect with our service offerings?",
+    "What risks are associated with our strategic response to major geopolitical changes and what are their mitigations?",
+    "How is executive sponsorship involved in our business transformation themes?",
+    "How do our talent and capabilities strategies relate to our operations in specific regions?",
+    "What key events or triggers are associated with our systems integration programmes?",
+    "How do our strategic initiatives contribute to value creation?",
+    "Which programmes are connected to the theme of responsible and sustainable living?",
+    "What is the role of steering groups in the context of project management?",
+    "How is our strategy theme related to agility and change management related to our service offerings?",
+    "Which areas of support are involved in our data management enhancement programmes?"
 ];
 
 var list = document.getElementById('question-list');
-
-for (var i = 0; i < questions.length; i++) {
+for (var i = 0; i < low_level_questions.length; i++) {
     var listItem = document.createElement('li');
-    listItem.textContent = questions[i];
+    listItem.textContent = low_level_questions[i];
+    list.appendChild(listItem);
+}
+
+var high_level_questions = [
+    "What impact could poor project execution have on our ongoing acquisitions and disposals?",
+    "How are we ensuring non-delivery of benefits risk is being mitigated in our revenue management programmes?",
+    "What steps are we taking to prevent business disruption as a result of our strategic initiatives?",
+    "How are we managing the risk of slowing digitisation pace in our supply chain themes?",
+    "In what ways could a slowed technological change risk affect our data management enhancement programmes?",
+    "How can we ensure that executive sponsorship and steering groups are effectively supporting our organizational transformation initiatives?",
+    "Are regular progress updates being maintained for our key strategic initiatives and are there any significant updates?",
+    "How are our links with digital programme teams contributing to systems integration efforts?",
+    "Are appropriate personnel assigned for critical technological implementations?",
+    "How are we monitoring the volume of our change programmes?",
+    "Are we aligning our innovation and sourcing efforts with our overall value creation strategies?",
+    "How is our talent and capabilities theme being reflected in our project acquisitions?",
+    "Are our leadership standards being followed in all our project management practices?",
+    "How is our supply chain strategy being applied to our key operational areas?",
+    "In the context of business transformation themes, how are we handling the risks and challenges associated with our operations?"
+]
+var list = document.getElementById('question-list2');
+for (var i = 0; i < high_level_questions.length; i++) {
+    var listItem = document.createElement('li');
+    listItem.textContent = high_level_questions[i];
     list.appendChild(listItem);
 }
 
