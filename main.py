@@ -45,7 +45,7 @@ def get_bot_response():
         # ("Method of Generic_Cypher: ", QG.generic_cypher, question),
         # ("Method of Langchain Graph Cypher QA", QG.graph_cypher_qa, question),
         # ("Method of QA Cypher with Graph in Vectorstore", QG.graph_qa_graph_pinecone, question,"graph_02", "context"),
-        ("Method of QA Cypher with PDFs in Vectorstore", QG.graph_qa_pdf_pinecone, question, "unilever", "text"),
+        ("Method of QA Cypher with PDFs in Vectorstore", QG.graph_qa_pdf_pinecone, question, "'Unilever-2018-2019", "text"),
         # ("Method of QA Cypher with Knowledge Triples in Vectorstore", QG.graph_qa_knowledge_triples, question),
         # ("Method of Langchain Graph Cypher QA with Improved Hints", QG.optimised_cyher, question, "graph", "name", 20)
     ]
