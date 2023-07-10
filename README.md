@@ -1,5 +1,5 @@
 # PS-Chat
-The code of delivering the ChatBot project for PS
+The code for delivering the ChatBot project for PS
 
 # Install the Requirements in your terminal
 
@@ -39,7 +39,7 @@ PINECONE_GRAPH_NAMESPACE = "my-graph"
 
 
 # Ingest your data
-This could take a while if you have multiple documents. This function will ingest PDF documents in your folder and also your graph database.
+This could take a while if you have multiple documents. This function will upload the embeddings of your PDF documents and graph database to the cloud vector database.
 You can uncomment the graph ingesting if you only want to upload a new pdf.
 
 ```
