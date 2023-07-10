@@ -13,7 +13,7 @@ pip install -r requirements.txt
 Put your documents into ``` ./docs ```  or another path to match your .env setting
 
 
-# .env
+# Sett your environment file as .env in the main folder
 ```
 NEO4J_URL="xxxxx"
 NEO4J_USER="xxxxx"
@@ -28,7 +28,7 @@ PINECONE_INDEX = "xxxxx"
 # pdf doc directory
 PDF_DOC_DIR = "./docs" # change as you like
 
-# upload parameters change as you like
+# Upload parameters change as you like
 CHUNK_SIZE = 1000 
 CHUNK_OVERLAP = 0
 
