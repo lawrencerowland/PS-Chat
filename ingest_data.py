@@ -2,6 +2,7 @@
 
 
 from utils.pdf_loader import ingest_pdf
+from utils.graph_loader import ingest_graph
 from dotenv import load_dotenv
 import os
 
@@ -17,13 +18,18 @@ os.environ['OPENAI_API_KEY'] = openai_key
 pinecone_api_key = os.getenv('PINECONE_KEY')
 pinecone_env_name = os.getenv('PINECONE_ENV')
 pinecone_index_name = os.getenv('PINECONE_INDEX')
-namespace = os.getenv('PINECONE_NAMESPACE')
-
+pdf_namespace = os.getenv('PINECONE_PDF_NAMESPACE')
+graph_namespace = os.getenv('PINECONE_GRAPH_NAMESPACE')
+source_name = os.getenv('SOURCE_NAME')
 doc_dir = os.getenv('PDF_DOC_DIR')
 
 chunk_size = int(os.getenv('CHUNK_SIZE'))
 chunk_overlap = int(os.getenv('CHUNK_OVERLAP'))
 
 if __name__ == "__main__":
-    pdf_ingest = ingest_pdf(namespace, pinecone_api_key, pinecone_env_name, pinecone_index_name, doc_dir)
-    pdf_ingest.upload_pdf_to_pinecone(chunk_size, chunk_overlap)
+    pdf_ingest = ingest_pdf(pdf_namespace, pinecone_api_key, pinecone_env_name, pinecone_index_name, doc_dir)
+    # pdf_ingest.upload_pdf_to_pinecone(chunk_size, chunk_overlap)
+
+    graph_ingest = ingest_graph(graph_namespace, neo4j_url, neo4j_user, neo4j_password,
+                                pinecone_api_key, pinecone_env_name, pinecone_index_name)
+    graph_ingest.upload_graph_to_pinecone(source_name)

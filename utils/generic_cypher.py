@@ -98,7 +98,7 @@ class Neo4jGPTQuery:
             messages.extend(history)
 
         completions = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4",
             temperature=0.0,
             max_tokens=2000,
             messages=messages

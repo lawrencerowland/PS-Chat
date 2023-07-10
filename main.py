@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, Response
-from utils.graph_qurey import QueryGraph
+# from utils.graph_qurey import QueryGraph
+from utils.talk2graphs import QueryGraph
 import time
 import json
 from threading import Thread
@@ -17,7 +18,8 @@ pinecone_env_name = os.getenv('PINECONE_ENV')
 pinecone_index_name = os.getenv('PINECONE_INDEX')
 os.environ['OPENAI_API_KEY'] = openai_key
 
-pinecone_namespace = os.getenv('PINECONE_NAMESPACE')
+pdf_namespace = os.getenv('PINECONE_PDF_NAMESPACE')
+graph_namespace = os.getenv('PINECONE_GRAPH_NAMESPACE')
 
 app = Flask(__name__)
 
@@ -30,43 +32,30 @@ def home():
 def get_bot_response():
     question = request.form.get('msg')
 
-    QG = QueryGraph(neo4j_url, neo4j_user, neo4j_password, 
-                    openai_key, pinecone_api_key, pinecone_env_name, pinecone_index_name)
-    
-    response = {}
-    
-    response_text = QG.graph_qa_pdf_pinecone(question, pinecone_namespace, "text")
+    QG = QueryGraph(neo4j_url, neo4j_user, neo4j_password, openai_key)
 
-    response["Query PDF"]=response_text
+    response = {}
+    def run_exp(exp_name, func, *args, **kwargs):
+        try:
+            response[exp_name] = func(*args, **kwargs)
+            print (f"........Finished {exp_name}........")
+        except Exception as e:
+            response[exp_name] = str(e)
+            print(f"An error occurred in {exp_name}: {str(e)}")
+
+    experiments = [
+        ("Method of Generic_Cypher: ", QG.generic_cypher, question),
+        ("Method of Langchain Graph Cypher QA", QG.graph_cypher_qa, question),
+        ("Method of Optimised Cypher QA", QG.optimised_cyher, question, pinecone_api_key,  
+                                            pinecone_env_name,pinecone_index_name, graph_namespace)
+    ]
+    threads = [Thread(target=run_exp, args=exp) for exp in experiments]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
 
     return jsonify(response)
-    
-    # response = {}
-
-    # def run_exp(exp_name, func, *args, **kwargs):
-    #     try:
-    #         response[exp_name] = func(*args, **kwargs)
-    #         print (f"........Finished {exp_name}........")
-    #     except Exception as e:
-    #         response[exp_name] = str(e)
-    #         print(f"An error occurred in {exp_name}: {str(e)}")
-
-    # experiments = [
-    #     # ("Method of Generic_Cypher: ", QG.generic_cypher, question),
-    #     # ("Method of Langchain Graph Cypher QA", QG.graph_cypher_qa, question),
-    #     # ("Method of QA Cypher with Graph in Vectorstore", QG.graph_qa_graph_pinecone, question,"graph_02", "context"),
-    #     ("Method of QA Cypher with PDFs in Vectorstore", QG.graph_qa_pdf_pinecone, question, pinecone_namespace, "text"),
-    #     # ("Method of QA Cypher with Knowledge Triples in Vectorstore", QG.graph_qa_knowledge_triples, question),
-    #     # ("Method of Langchain Graph Cypher QA with Improved Hints", QG.optimised_cyher, question, "graph", "name", 20)
-    # ]
-
-    # threads = [Thread(target=run_exp, args=exp) for exp in experiments]
-    # for thread in threads:
-    #     thread.start()
-    # for thread in threads:
-    #     thread.join()
-
-    # return jsonify(response)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000, debug=True)
