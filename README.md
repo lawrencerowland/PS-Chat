@@ -1,5 +1,5 @@
 # PS-Chat
-The code of delivering ChatBot project for PS
+The code of delivering the ChatBot project for PS
 
 # Install the Requirements in your terminal
 
@@ -10,7 +10,7 @@ pip install -r requirements.txt
 
 
 # Upload your own documents
-Put your documents into ``` ./docs ```  or other path to match your .env setting
+Put your documents into ``` ./docs ```  or another path to match your .env setting
 
 
 # .env
@@ -28,19 +28,19 @@ PINECONE_INDEX = "xxxxx"
 # pdf doc directory
 PDF_DOC_DIR = "./docs" # change as you like
 
-# upload parameters
-CHUNK_SIZE = 1000 # change as you like
-CHUNK_OVERLAP = 0 # change as you like
+# upload parameters change as you like
+CHUNK_SIZE = 1000 
+CHUNK_OVERLAP = 0
 
-PINECONE_PDF_NAMESPACE = "my-pdf" # change as you like
-PINECONE_GRAPH_NAMESPACE = "my-graph" # change as you like
+PINECONE_PDF_NAMESPACE = "my-pdf" 
+PINECONE_GRAPH_NAMESPACE = "my-graph" 
 
 ```
 
 
 # Ingest your data
-This could be take a while if you have multiple documents. This function will ingest PDF documents in your folder and also your graph database.
-You can uncommnent the graph ingesting if you only want to upload a new pdf.
+This could take a while if you have multiple documents. This function will ingest PDF documents in your folder and also your graph database.
+You can uncomment the graph ingesting if you only want to upload a new pdf.
 
 ```
 python ingest_data.py
@@ -54,7 +54,7 @@ After ingesting your data, simply run main.py for local deployment and debugging
 python main.py
 ```
 
-# Deploy your app using gunicorn
+# Deploy your app using Gunicorn
 
 ```
 gunicorn -w 2 -b :8000 main:app --timeout=120
