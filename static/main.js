@@ -106,7 +106,7 @@ $('#send_button').on('click', function (e) {
 
                     setTimeout(function () {
                         showBotMessage(sectionTitle + ': ' + sectionResponse);
-                    }, 300);
+                    }, 500);
                 }
             }
         },

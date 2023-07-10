@@ -3,14 +3,11 @@ from langchain.chains import GraphCypherQAChain
 from langchain.graphs import Neo4jGraph
 from utils.generic_cypher import Neo4jGPTQuery
 import neo4j
-from langchain.chains.qa_with_sources import load_qa_with_sources_chain
-from langchain.llms import OpenAI
 import pinecone
 from langchain.vectorstores import Pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
 from neo4j import GraphDatabase
-from langchain.chains import GraphQAChain
-from langchain.indexes.graph import NetworkxEntityGraph
+
 
 def list_to_string(lst):
     result = ''
@@ -28,7 +25,7 @@ def list_to_string(lst):
 
 class QueryGraph():
     def __init__(self, neo4j_url=None, neo4j_user=None, neo4j_password=None, 
-                openai_key=None):
+                openai_key=None, model_version="gpt-4"):
         
         self.neo4j_url=neo4j_url
         self.neo4j_user=neo4j_user
@@ -36,6 +33,7 @@ class QueryGraph():
         self.openai_key=openai_key
         self.embeddings = OpenAIEmbeddings()
         self.driver = GraphDatabase.driver(neo4j_url, auth=(neo4j_user, neo4j_password))
+        self.model_version = model_version
 
     # Experiment 2: Generic Cypher
     def generic_cypher(self, query):
@@ -43,7 +41,8 @@ class QueryGraph():
                                 url=self.neo4j_url,
                                 user=self.neo4j_user,
                                 password=self.neo4j_password,
-                                openai_api_key=self.openai_key)
+                                openai_api_key=self.openai_key,
+                                model_version=self.model_version)
         
         response = self.db.run(query)
         print (response)
@@ -58,7 +57,7 @@ class QueryGraph():
                             username=self.neo4j_user,
                             password=self.neo4j_password)
         
-        chain = GraphCypherQAChain.from_llm(ChatOpenAI(model='gpt-4', temperature=0), graph=graph, verbose=True,)
+        chain = GraphCypherQAChain.from_llm(ChatOpenAI(model=self.model_version, temperature=0), graph=graph, verbose=True,)
         response = chain.run(question)
         return response
     
@@ -68,7 +67,7 @@ class QueryGraph():
         
         pinecone.init(api_key=pinecone_api_key,environment=pinecone_env_name)
         index = pinecone.Index(pinecone_index_name)
-        vectorstore = Pinecone(index , self.embeddings.embed_query, text_key, namespace=my_namespace)
+        vectorstore = Pinecone(index, self.embeddings.embed_query, text_key, namespace=my_namespace)
 
         docs = vectorstore.similarity_search(question, k=topK)
 
@@ -87,7 +86,7 @@ class QueryGraph():
                 related_edges+=d.page_content + ", "
 
         # Build additional hint
-        additional_hint = f"""Hint: Please refer the names of nodes:{related_node_names} or the labels of nodes: {related_node_types} or the edges type: {related_edges} if necessary"""
+        additional_hint = f"""If you don't need these information, please ignore this. Hint: Please refer the names of nodes:{related_node_names} or the labels of nodes: {related_node_types} or the edges type: {related_edges} if necessary. """
 
         # Enquiry the database as graph cypher QA
         graph = Neo4jGraph(
@@ -95,7 +94,7 @@ class QueryGraph():
                             username=self.neo4j_user,
                             password=self.neo4j_password)
         
-        chain = GraphCypherQAChain.from_llm(ChatOpenAI(temperature=0), graph=graph, verbose=True,)
+        chain = GraphCypherQAChain.from_llm(ChatOpenAI(model=self.model_version,temperature=0), graph=graph, verbose=True,)
         response = chain.run(question + additional_hint)
 
         return response

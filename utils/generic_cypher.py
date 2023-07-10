@@ -50,11 +50,12 @@ def fetch_cypher_query(text):
         return False
 
 class Neo4jGPTQuery:
-    def __init__(self, url, user, password, openai_api_key):
+    def __init__(self, url, user, password, openai_api_key, model_version="gpt-4"):
         self.driver = GraphDatabase.driver(url, auth=(user, password))
         openai.api_key = openai_api_key
         # construct schema
         self.schema = self.generate_schema()
+        self.model_version = model_version
 
     def generate_schema(self):
         node_props = self.query_database(node_properties_query)
@@ -98,9 +99,9 @@ class Neo4jGPTQuery:
             messages.extend(history)
 
         completions = openai.ChatCompletion.create(
-            model="gpt-4",
+            model=self.model_version,
             temperature=0.0,
-            max_tokens=2000,
+            max_tokens=8000,
             messages=messages
         )
         return completions.choices[0].message.content
