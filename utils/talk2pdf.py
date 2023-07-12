@@ -9,10 +9,13 @@ from langchain.indexes.graph import NetworkxEntityGraph
 
 
 def get_citations(response):
-    citations = set()
+    citations = []
+    idx = 1
     for d in response["input_documents"]:
-        citations.add(d.metadata["source"])
-    return list(citations)
+        cited_text = "<b>" + f"[{idx}] File Name of Source: " + d.metadata["source"] + "</b>" + "<br>" + d.page_content
+        citations.append (cited_text)
+        idx+=1
+    return citations
 
 
 class QueryDocs():
@@ -49,4 +52,5 @@ class QueryDocs():
         chain = load_qa_with_sources_chain(ChatOpenAI(model=self.model_version ,temperature=0), chain_type="stuff")
         response = chain({"input_documents": docs, "question": question}, return_only_outputs=False)
         response["citations"] = get_citations(response)
+        print (response)
         return response

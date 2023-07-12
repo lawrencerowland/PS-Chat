@@ -9,7 +9,7 @@
  * Renders a message on the chat screen based on the given arguments.
  * This is called from the `showUserMessage` and `showBotMessage`.
  */
- function renderMessageToScreen(args) {
+function renderMessageToScreen(args) {
     // local variables
     let displayDate = (args.time || getCurrentTimestamp()).toLocaleString('en-IN', {
         month: 'short',
@@ -19,16 +19,28 @@
     });
     let messagesContainer = $('.messages');
 
-    // If the source is an array, convert it into a string of HTML paragraphs
-    let sourceText = Array.isArray(args.source) ? args.source.map(src => `<p>${src}</p>`).join('') : args.source;
-
-    // Create a collapsible box for source information, if source is provided
-    let sourceBox = args.source ? `
-        <button class="collapsible">Show Source</button>
-        <div class="content">
-            ${sourceText}
-        </div>
-    ` : '';
+    // Convert the source into a string of HTML paragraphs
+    // Each source will be wrapped into its own collapsible section
+    let sourceBox = '';
+    if (args.source) {
+        if (Array.isArray(args.source)) {
+            args.source.forEach((src, idx) => {
+                sourceBox += `
+                <button class="collapsible" id="collapsible-${idx}">Show Source ${idx + 1}</button>
+                <div class="content">
+                    <p>${src}</p>
+                </div>
+                `;
+            });
+        } else {
+            sourceBox = `
+            <button class="collapsible">Show Source</button>
+            <div class="content">
+                <p>${args.source}</p>
+            </div>
+            `;
+        }
+    }
 
     // init element
     let message = $(`
@@ -149,7 +161,24 @@ $('#send_button').on('click', function (e) {
 
 
 
-var low_level_questions = [
+var example_questions = [
+    "What are the key stages of the decommissioning programme process?",
+    "What are the key factors for understanding whether an EIA is required?",
+    "What are the monitoring requirements to ensure compliance with environmental regulations?",
+    "What are the guidelines and standards for the removal of offshore installations and structures?",
+    "What lessons can be learned about the start of bunkering the bulk cement products?",
+    "What lessons can be learned about the 17 ½” Drilling & 13 3/8” casing?",
+    "Summarise the main causes of NPT events",
+];
+
+var list = document.getElementById('question-list');
+for (var i = 0; i < example_questions.length; i++) {
+    var listItem = document.createElement('li');
+    listItem.textContent = example_questions[i];
+    list.appendChild(listItem);
+}
+
+var other_questions = [
     "What are the strategic dependencies of our ongoing technological implementation projects?",
     "Which mitigation strategies are linked to the risk of poor project execution?",
     "What is our supply chain strategy associated with digital transformation?",
@@ -169,17 +198,7 @@ var low_level_questions = [
     "Which programmes are connected to the theme of responsible and sustainable living?",
     "What is the role of steering groups in the context of project management?",
     "How is our strategy theme related to agility and change management related to our service offerings?",
-    "Which areas of support are involved in our data management enhancement programmes?"
-];
-
-var list = document.getElementById('question-list');
-for (var i = 0; i < low_level_questions.length; i++) {
-    var listItem = document.createElement('li');
-    listItem.textContent = low_level_questions[i];
-    list.appendChild(listItem);
-}
-
-var high_level_questions = [
+    "Which areas of support are involved in our data management enhancement programmes?",
     "What impact could poor project execution have on our ongoing acquisitions and disposals?",
     "How are we ensuring non-delivery of benefits risk is being mitigated in our revenue management programmes?",
     "What steps are we taking to prevent business disruption as a result of our strategic initiatives?",
@@ -197,9 +216,9 @@ var high_level_questions = [
     "In the context of business transformation themes, how are we handling the risks and challenges associated with our operations?"
 ]
 var list = document.getElementById('question-list2');
-for (var i = 0; i < high_level_questions.length; i++) {
+for (var i = 0; i < other_questions.length; i++) {
     var listItem = document.createElement('li');
-    listItem.textContent = high_level_questions[i];
+    listItem.textContent = other_questions[i];
     list.appendChild(listItem);
 }
 
