@@ -41,7 +41,6 @@ class ingest_pdf:
         text_splitter = RecursiveCharacterTextSplitter(chunk_size = chunk_size, chunk_overlap = chunk_overlap)
         docs = text_splitter.split_documents(documents)
         
-        
         Pinecone.from_documents(docs, OpenAIEmbeddings(), 
                                             index_name=self.pinecone_index_name, 
                                             namespace=self.namespace)

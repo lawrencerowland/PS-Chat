@@ -1,7 +1,7 @@
 /**
  * Returns the current datetime for the message creation.
  */
-function getCurrentTimestamp() {
+ function getCurrentTimestamp() {
 	return new Date();
 }
 
@@ -9,35 +9,58 @@ function getCurrentTimestamp() {
  * Renders a message on the chat screen based on the given arguments.
  * This is called from the `showUserMessage` and `showBotMessage`.
  */
-function renderMessageToScreen(args) {
-	// local variables
-	let displayDate = (args.time || getCurrentTimestamp()).toLocaleString('en-IN', {
-		month: 'short',
-		day: 'numeric',
-		hour: 'numeric',
-		minute: 'numeric',
-	});
-	let messagesContainer = $('.messages');
+ function renderMessageToScreen(args) {
+    // local variables
+    let displayDate = (args.time || getCurrentTimestamp()).toLocaleString('en-IN', {
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+    });
+    let messagesContainer = $('.messages');
 
-	// init element
-	let message = $(`
-	<li class="message ${args.message_side}">
-		<div class="avatar"></div>
-		<div class="text_wrapper">
-			<div class="text">${args.text}</div>
-			<div class="timestamp">${displayDate}</div>
-		</div>
-	</li>
-	`);
+    // If the source is an array, convert it into a string of HTML paragraphs
+    let sourceText = Array.isArray(args.source) ? args.source.map(src => `<p>${src}</p>`).join('') : args.source;
 
-	// add to parent
-	messagesContainer.append(message);
+    // Create a collapsible box for source information, if source is provided
+    let sourceBox = args.source ? `
+        <button class="collapsible">Show Source</button>
+        <div class="content">
+            ${sourceText}
+        </div>
+    ` : '';
 
-	// animations
-	setTimeout(function () {
-		message.addClass('appeared');
-	}, 0);
-	messagesContainer.animate({ scrollTop: messagesContainer.prop('scrollHeight') }, 300);
+    // init element
+    let message = $(`
+    <li class="message ${args.message_side}">
+        <div class="avatar"></div>
+        <div class="text_wrapper">
+            <div class="text">${args.text}</div>
+            ${sourceBox}
+            <div class="timestamp">${displayDate}</div>
+        </div>
+    </li>
+    `);
+
+    // add to parent
+    messagesContainer.append(message);
+
+    // animations
+    setTimeout(function () {
+        message.addClass('appeared');
+    }, 0);
+    messagesContainer.animate({ scrollTop: messagesContainer.prop('scrollHeight') }, 300);
+
+    // Event listener for the collapsible box
+    $('.collapsible').on('click', function() {
+        this.classList.toggle('active');
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+            content.style.display = "none";
+        } else {
+            content.style.display = "block";
+        }
+    });
 }
 
 /**
@@ -54,12 +77,13 @@ function showUserMessage(message, datetime) {
 /**
  * Displays the chatbot message on the chat screen. This is the left side message.
  */
-function showBotMessage(message, datetime) {
-	renderMessageToScreen({
-		text: message,
-		time: datetime,
-		message_side: 'left',
-	});
+ function showBotMessage(message, datetime, source) {
+    renderMessageToScreen({
+        text: message,
+        time: datetime,
+        message_side: 'left',
+        source: source
+    });
 }
 
 /**
@@ -90,6 +114,7 @@ $('#send_button').on('click', function (e) {
     $('#loading_spinner').show();
 
     // get response from server
+    // get response from server
     $.ajax({
         url: '/get',
         method: 'POST',
@@ -102,10 +127,11 @@ $('#send_button').on('click', function (e) {
             for (var key in data) {
                 if (data.hasOwnProperty(key)) {
                     let sectionTitle = '<strong>' + key + '</strong>';
-                    let sectionResponse = data[key];
+                    let sectionResponse = data[key]["text"];
+                    let sectionSource = data[key]['source'];  // Assuming 'source' is the key for the additional information
 
                     setTimeout(function () {
-                        showBotMessage(sectionTitle + ': ' + sectionResponse);
+                        showBotMessage(sectionTitle + ': ' + sectionResponse, undefined, sectionSource);
                     }, 500);
                 }
             }
@@ -199,5 +225,5 @@ function randomstring(length = 20) {
  * Set initial bot message to the screen for the user.
  */
 $(window).on('load', function () {
-	showBotMessage('Hi, there! I am a Chatbot specialised in communicating with Graph Databases.');
+	showBotMessage('Hi, there! I am a Chatbot specialised in project management');
 });
