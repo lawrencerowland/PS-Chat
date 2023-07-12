@@ -65,23 +65,23 @@
 					<!-- help container -->
 					<div class="panel-group" id="accordion">
 
-						<!-- help - 1 -->
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion"
-										href="#collapse1">Direct Enquiry</a>
-								</h4>
-							</div>
-							<div id="collapse1" class="panel-collapse collapse in">
-								<div class="panel-body">
-									<ol id="question-list">
-									</ol>
-								</div>
+					<!-- help - 1 -->
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion"
+									href="#collapse1">Direct Enquiry</a>
+							</h4>
+						</div>
+						<div id="collapse1" class="panel-collapse collapse">
+							<div class="panel-body">
+								<ol id="question-list">
+								</ol>
 							</div>
 						</div>
+					</div>
 
-					 <!-- help - 2 -->
+					<!-- help - 2 -->
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h4 class="panel-title">
@@ -89,14 +89,32 @@
 									href="#collapse2">High Level Questions</a>
 							</h4>
 						</div>
-						<div id="collapse2" class="panel-collapse collapse in">
+						<div id="collapse2" class="panel-collapse collapse">
 							<div class="panel-body">
 								<ol id="question-list2">
 								</ol>
 							</div>
 						</div>
 					</div>
+					
 
+					<!-- Internal Documents -->
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse3">Internal Documents</a>
+							</h4>
+						</div>
+						<div id="collapse3" class="panel-collapse collapse">
+							<div class="panel-body">
+								<ol id="doc-list">
+									{% for filename in filenames %}
+										<li>{{ filename }}</li>
+									{% endfor %}
+								</ol>
+							</div>
+						</div>
+					</div>
 
 
 				</div>

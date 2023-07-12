@@ -30,6 +30,6 @@ if __name__ == "__main__":
     pdf_ingest = ingest_pdf(pdf_namespace, pinecone_api_key, pinecone_env_name, pinecone_index_name, doc_dir)
     pdf_ingest.upload_pdf_to_pinecone(chunk_size, chunk_overlap)
 
-    graph_ingest = ingest_graph(graph_namespace, neo4j_url, neo4j_user, neo4j_password,
-                                pinecone_api_key, pinecone_env_name, pinecone_index_name)
-    graph_ingest.upload_graph_to_pinecone(source_name)
+    # graph_ingest = ingest_graph(graph_namespace, neo4j_url, neo4j_user, neo4j_password,
+    #                             pinecone_api_key, pinecone_env_name, pinecone_index_name)
+    # graph_ingest.upload_graph_to_pinecone(source_name)

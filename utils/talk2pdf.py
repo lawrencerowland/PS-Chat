@@ -7,6 +7,14 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chains import GraphQAChain
 from langchain.indexes.graph import NetworkxEntityGraph
 
+
+def get_citations(response):
+    citations = set()
+    for d in response["input_documents"]:
+        citations.add(d.metadata["source"])
+    return list(citations)
+
+
 class QueryDocs():
     def __init__(self,
                 pinecone_api_key=None,
@@ -35,3 +43,10 @@ class QueryDocs():
         response = chain.run(question)
         return response
     
+    def qa_pdf_with_citations (self, question, my_namespace="unilever", text_key="text", topK=5):
+        vectorstore = Pinecone(self.index , self.embeddings.embed_query, text_key, namespace=my_namespace)
+        docs = vectorstore.similarity_search(question, k=topK)
+        chain = load_qa_with_sources_chain(ChatOpenAI(model=self.model_version ,temperature=0), chain_type="stuff")
+        response = chain({"input_documents": docs, "question": question}, return_only_outputs=False)
+        response["citations"] = get_citations(response)
+        return response
