@@ -1,11 +1,19 @@
 
-
 from langchain.document_loaders import DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Pinecone
 import pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
+import os
+from tqdm import tqdm
 
+def get_subfolders(directory):
+    subfolders = []
+    for root, dirs, files in os.walk(directory):
+        for dir in dirs:
+            subfolder = os.path.join(root, dir)
+            subfolders.append(subfolder)
+    return subfolders
 
 class ingest_pdf:
     def __init__(self, namespace, pinecone_api_key, pinecone_env_name, pinecone_index_name, 
@@ -31,22 +39,40 @@ class ingest_pdf:
         print ("Start uploading PDFs to Pinecone...")
 
         
-        index = pinecone.Index(self.pinecone_index_name)
-        index.delete(deleteAll='true', namespace=self.namespace)
-        print ("clearing pinecone index if namespace exists...")
+        # index = pinecone.Index(self.pinecone_index_name)
+        # index.delete(deleteAll='true', namespace=self.namespace)
+        # print ("clearing pinecone index if namespace exists...")
 
+        subfolders = get_subfolders(self.doc_dir)
+        if len(subfolders)>=1:
+            my_namespace = self.namespace     
+            for subfolder in tqdm(subfolders):
+                if self.namespace == None:
+                    my_namespace = subfolder.split(self.doc_dir)[1].replace("/","")
 
-        my_loader = DirectoryLoader(self.doc_dir, glob='**/*.pdf')
-        documents = my_loader.load()
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size = chunk_size, chunk_overlap = chunk_overlap)
-        docs = text_splitter.split_documents(documents)
+                my_loader = DirectoryLoader(subfolder, glob='**/*.pdf')
+
+                documents = my_loader.load()
+                text_splitter = RecursiveCharacterTextSplitter(chunk_size = chunk_size, chunk_overlap = chunk_overlap)
+                docs = text_splitter.split_documents(documents)
+                
+                Pinecone.from_documents(docs, OpenAIEmbeddings(), 
+                                                    index_name=self.pinecone_index_name, 
+                                                    namespace=my_namespace)
+                print ("Finished uploading PDFs to Pinecone in folder " + subfolder + " with namespace " + my_namespace)
         
-        Pinecone.from_documents(docs, OpenAIEmbeddings(), 
-                                            index_name=self.pinecone_index_name, 
-                                            namespace=self.namespace)
-        print ("Finished uploading PDFs to Pinecone...")
-
-
-
-
-    
+        else:
+            print ("No subfolders found in " + self.doc_dir)
+            # upload all documents in the directory
+            my_namespace = self.namespace
+            if my_namespace== None:
+                my_namespace = "MyPDFs"
+            my_loader = DirectoryLoader(self.doc_dir, glob='**/*.pdf')
+            documents = my_loader.load()
+            text_splitter = RecursiveCharacterTextSplitter(chunk_size = chunk_size, chunk_overlap = chunk_overlap)
+            docs = text_splitter.split_documents(documents)
+            
+            Pinecone.from_documents(docs, OpenAIEmbeddings(), 
+                                                index_name=self.pinecone_index_name, 
+                                                namespace=my_namespace)
+            print ("Finished uploading PDFs to Pinecone in folder " + subfolder + " with namespace " + my_namespace)

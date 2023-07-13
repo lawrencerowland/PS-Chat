@@ -9,6 +9,8 @@
  * Renders a message on the chat screen based on the given arguments.
  * This is called from the `showUserMessage` and `showBotMessage`.
  */
+
+
 function renderMessageToScreen(args) {
     // local variables
     let displayDate = (args.time || getCurrentTimestamp()).toLocaleString('en-IN', {
@@ -117,6 +119,7 @@ $('#msg_input').keypress(function (e) {
  */
 $('#send_button').on('click', function (e) {
     var userMsg = $('#msg_input').val();
+    var namespace = $('#namespace_selector').val(); // Moved this line inside the click event handler.
 
     // get and show message and reset input
     showUserMessage(userMsg);
@@ -130,7 +133,8 @@ $('#send_button').on('click', function (e) {
     $.ajax({
         url: '/get',
         method: 'POST',
-        data: { msg: userMsg },
+        data: { msg: userMsg,
+            namespace: namespace},
         success: function(data) {
             // hide loading spinner
             $('#loading_spinner').hide();

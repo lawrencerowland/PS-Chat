@@ -19,21 +19,34 @@ pinecone_env_name = os.getenv('PINECONE_ENV')
 pinecone_index_name = os.getenv('PINECONE_INDEX')
 os.environ['OPENAI_API_KEY'] = openai_key
 
-pdf_namespace = os.getenv('PINECONE_PDF_NAMESPACE')
+# pdf_namespace = os.getenv('PINECONE_PDF_NAMESPACE')
 graph_namespace = os.getenv('PINECONE_GRAPH_NAMESPACE')
 
 app = Flask(__name__)
 
+def get_files(directory_path):
+    files = {}
+    for item in os.listdir(directory_path):
+        item_path = os.path.join(directory_path, item)
+        if os.path.isdir(item_path):
+            files[item] = get_files(item_path)
+        else:
+            files[item] = None
+    return files
+
+
 @app.route('/')
 def home():
     directory_path = './docs'
-    filenames = os.listdir(directory_path)
-    return render_template('bot.html', filenames=filenames)
+    files = get_files(directory_path)
+    print (files)
+    return render_template('bot.html', files=files)
 
 
 @app.route('/get', methods=['POST'])
 def get_bot_response():
     question = request.form.get('msg')
+    pdf_namespace = request.form.get('namespace')  # get the namespace from the request
 
     # QG = QueryGraph(neo4j_url, neo4j_user, neo4j_password, openai_key)
     QD = QueryDocs(pinecone_api_key, pinecone_env_name, pinecone_index_name)
