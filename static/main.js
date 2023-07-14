@@ -10,7 +10,6 @@
  * This is called from the `showUserMessage` and `showBotMessage`.
  */
 
-
 function renderMessageToScreen(args) {
     // local variables
     let displayDate = (args.time || getCurrentTimestamp()).toLocaleString('en-IN', {
@@ -162,69 +161,6 @@ $('#send_button').on('click', function (e) {
         }
     });
 });
-
-
-
-var example_questions = [
-    "What are the key stages of the decommissioning programme process?",
-    "What are the key factors for understanding whether an EIA is required?",
-    "What are the monitoring requirements to ensure compliance with environmental regulations?",
-    "What are the guidelines and standards for the removal of offshore installations and structures?",
-    "What lessons can be learned about the start of bunkering the bulk cement products?",
-    "What lessons can be learned about the 17 ½” Drilling & 13 3/8” casing?",
-    "Summarise the main causes of NPT events",
-];
-
-var list = document.getElementById('question-list');
-for (var i = 0; i < example_questions.length; i++) {
-    var listItem = document.createElement('li');
-    listItem.textContent = example_questions[i];
-    list.appendChild(listItem);
-}
-
-var other_questions = [
-    "What are the strategic dependencies of our ongoing technological implementation projects?",
-    "Which mitigation strategies are linked to the risk of poor project execution?",
-    "What is our supply chain strategy associated with digital transformation?",
-    "Which programmes are associated with winning through brand innovation and market competitiveness?",
-    "What are the risks associated with potential business disruptions?",
-    "Which areas of support are provided for our ongoing organizational transformation programmes?",
-    "What models are we using for creating strategic value?",
-    "How are our acquisition programmes linked with future partnerships strategies?",
-    "What are the strategic dependencies for our net revenue management programme?",
-    "What is our supply chain strategy for our logistics operations?",
-    "How does innovation connect with our service offerings?",
-    "What risks are associated with our strategic response to major geopolitical changes and what are their mitigations?",
-    "How is executive sponsorship involved in our business transformation themes?",
-    "How do our talent and capabilities strategies relate to our operations in specific regions?",
-    "What key events or triggers are associated with our systems integration programmes?",
-    "How do our strategic initiatives contribute to value creation?",
-    "Which programmes are connected to the theme of responsible and sustainable living?",
-    "What is the role of steering groups in the context of project management?",
-    "How is our strategy theme related to agility and change management related to our service offerings?",
-    "Which areas of support are involved in our data management enhancement programmes?",
-    "What impact could poor project execution have on our ongoing acquisitions and disposals?",
-    "How are we ensuring non-delivery of benefits risk is being mitigated in our revenue management programmes?",
-    "What steps are we taking to prevent business disruption as a result of our strategic initiatives?",
-    "How are we managing the risk of slowing digitisation pace in our supply chain themes?",
-    "In what ways could a slowed technological change risk affect our data management enhancement programmes?",
-    "How can we ensure that executive sponsorship and steering groups are effectively supporting our organizational transformation initiatives?",
-    "Are regular progress updates being maintained for our key strategic initiatives and are there any significant updates?",
-    "How are our links with digital programme teams contributing to systems integration efforts?",
-    "Are appropriate personnel assigned for critical technological implementations?",
-    "How are we monitoring the volume of our change programmes?",
-    "Are we aligning our innovation and sourcing efforts with our overall value creation strategies?",
-    "How is our talent and capabilities theme being reflected in our project acquisitions?",
-    "Are our leadership standards being followed in all our project management practices?",
-    "How is our supply chain strategy being applied to our key operational areas?",
-    "In the context of business transformation themes, how are we handling the risks and challenges associated with our operations?"
-]
-var list = document.getElementById('question-list2');
-for (var i = 0; i < other_questions.length; i++) {
-    var listItem = document.createElement('li');
-    listItem.textContent = other_questions[i];
-    list.appendChild(listItem);
-}
 
 /**
  * Returns a random string. Just to specify bot message to the user.

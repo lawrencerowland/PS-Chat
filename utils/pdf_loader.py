@@ -32,6 +32,10 @@ class ingest_pdf:
                     )
 
 
+    def check_pinecone_index(self):
+        print ("Checking if pinecone index exists...")
+        index = pinecone.Index(self.pinecone_index_name)
+        print(index.describe_index_stats())
 
 
     def upload_pdf_to_pinecone(self, chunk_size=1000, chunk_overlap=0):
@@ -39,9 +43,8 @@ class ingest_pdf:
         print ("Start uploading PDFs to Pinecone...")
 
         
-        # index = pinecone.Index(self.pinecone_index_name)
-        # index.delete(deleteAll='true', namespace=self.namespace)
-        # print ("clearing pinecone index if namespace exists...")
+        index = pinecone.Index(self.pinecone_index_name)
+        available_namesacpes = index.describe_index_stats()["namespaces"]
 
         subfolders = get_subfolders(self.doc_dir)
         if len(subfolders)>=1:
@@ -50,11 +53,17 @@ class ingest_pdf:
                 if self.namespace == None:
                     my_namespace = subfolder.split(self.doc_dir)[1].replace("/","")
 
+                if my_namespace in available_namesacpes:
+                    print ("Namespace " + my_namespace + " already exists in pinecone index. Skipping...")
+                    continue
+
                 my_loader = DirectoryLoader(subfolder, glob='**/*.pdf')
 
                 documents = my_loader.load()
                 text_splitter = RecursiveCharacterTextSplitter(chunk_size = chunk_size, chunk_overlap = chunk_overlap)
                 docs = text_splitter.split_documents(documents)
+
+                print ("finsihed splitting documents and bigin uploading...")
                 
                 Pinecone.from_documents(docs, OpenAIEmbeddings(), 
                                                     index_name=self.pinecone_index_name, 

@@ -5,7 +5,7 @@ from utils.talk2pdf import QueryDocs
 import time
 import json
 from threading import Thread
-
+import glob
 ### Load environment variables
 from dotenv import load_dotenv
 import os
@@ -27,20 +27,42 @@ app = Flask(__name__)
 def get_files(directory_path):
     files = {}
     for item in os.listdir(directory_path):
-        item_path = os.path.join(directory_path, item)
-        if os.path.isdir(item_path):
-            files[item] = get_files(item_path)
-        else:
-            files[item] = None
+        if not item.startswith('.'):
+            item_path = os.path.join(directory_path, item)
+            if os.path.isdir(item_path):
+                files[item] = get_files(item_path) or {}
+            else:
+                files[item] = None
     return files
+
+def get_namespaces(directory):
+    namespaces = []
+    for root, dirs, files in os.walk(directory):
+        for dir in dirs:
+            namespaces.append(dir)
+    return namespaces
+
+def get_questions(directory):
+    Example_Questions = {}
+    # Glob pattern to find 'question.txt' files in all subdirectories
+    for filename in glob.glob(directory + '/**/questions.txt', recursive=True):
+        with open(filename, 'r') as f:
+            # Get the subfolder name
+            subfolder_name = os.path.dirname(filename).split('/')[-1]
+            # Read the file content and store it as a list of lines
+            content = f.read().splitlines()
+            dict_key = f"Example Questions of {subfolder_name}"
+            Example_Questions[dict_key] = content
+    return Example_Questions
 
 
 @app.route('/')
 def home():
     directory_path = './docs'
     files = get_files(directory_path)
-    print (files)
-    return render_template('bot.html', files=files)
+    namespaces = get_namespaces(directory_path)
+    Example_Questions = get_questions(directory_path)
+    return render_template('bot.html', files=files, namespaces=namespaces, questions=json.dumps(Example_Questions))
 
 
 @app.route('/get', methods=['POST'])

@@ -53,9 +53,9 @@
 					<!-- input -->
 					<div class="bottom_wrapper">
 						<select id="namespace_selector" class="custom-select">
-							<option value="OEDT">OEDT</option>
-							<option value="Praxis">Praxis</option>
-							<option value="Unilever">Unilever</option>
+							{% for namespace in namespaces %}
+								<option value="{{ namespace }}">{{ namespace }}</option>
+							{% endfor %}
 						</select>
 						
 						<input id="msg_input" placeholder="Say Hi to begin chat..." />
@@ -76,68 +76,50 @@
 
 					<!-- help container -->
 					<div class="panel-group" id="accordion">
-
-					<!-- help - 1 -->
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h4 class="panel-title">
-								<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion"
-									href="#collapse1">Example Questions</a>
-							</h4>
-						</div>
-						<div id="collapse1" class="panel-collapse collapse">
-							<div class="panel-body">
-								<ol id="question-list">
-								</ol>
-							</div>
-						</div>
-					</div>
-
-					<!-- help - 2 -->
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h4 class="panel-title">
-								<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion"
-									href="#collapse2">Other Example Questions</a>
-							</h4>
-						</div>
-						<div id="collapse2" class="panel-collapse collapse">
-							<div class="panel-body">
-								<ol id="question-list2">
-								</ol>
-							</div>
-						</div>
-					</div>
 					
 
 					<!-- Internal Documents -->
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h4 class="panel-title">
-								<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse3">Internal Documents</a>
+								<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#internal_collapse0">Internal Documents</a>
 							</h4>
 						</div>
-						<div id="collapse3" class="panel-collapse collapse">
+						<div id="internal_collapse0" class="panel-collapse collapse">
 							<div class="panel-body">
-								<div id="doc-list">
+								<!-- Here is where you generate the panels for each directory -->
+								<div id="documents-accordion">
 									{% for key, value in files.items() recursive %}
-										<li>
-											{% if value is mapping %}
-												<details>
-													<summary>{{ key }}</summary>
-													<ul>{{ loop(value.items()) }}</ul>
-												</details>
-											{% else %}
-												{{ key }}
-											{% endif %}
-										</li>
+										{% if value is mapping %}
+											<!-- This is a directory -->
+											<div class="panel panel-default">
+												<div class="panel-heading">
+													<h4 class="panel-title">
+														<a class="accordion-toggle" data-toggle="collapse" data-parent="#documents-accordion" href="#doc_collapse{{ loop.index }}">
+															{{ key }}
+														</a>
+													</h4>
+												</div>
+												<div id="doc_collapse{{ loop.index }}" class="panel-collapse collapse">
+													<div class="panel-body">
+														<ul>
+															<!-- Call the loop function again to generate nested structures -->
+															{{ loop(value.items()) }}
+														</ul>
+													</div>
+												</div>
+											</div>
+										{% else %}
+											<!-- This is a file -->
+											<li>{{ key }}</li>
+										{% endif %}
 									{% endfor %}
 								</div>
 							</div>
 						</div>
+					</div>
+					
 
-
-				</div>
 			</div>
 
 		</div>
@@ -151,6 +133,64 @@
 
 	<!-- custom scripts -->
 	<script src="static/main.js"></script>
+
+	<script>
+		var questions = JSON.parse('{{ questions | safe }}');
+		var i = 1; // We'll use this to create unique ids for the collapsible divs.
+	
+		for (var title in questions) {
+		  var panel = $('<div/>', {
+			'class': 'panel panel-default'
+		  });
+	
+		  var panelHeading = $('<div/>', {
+			'class': 'panel-heading'
+		  });
+	
+		  var panelTitle = $('<h4/>', {
+			'class': 'panel-title'
+		  });
+	
+		  var link = $('<a/>', {
+			'class': 'accordion-toggle',
+			'data-toggle': 'collapse',
+			'data-parent': '#accordion',
+			'href': '#js_collapse' + i,
+			'text': title
+		  });
+	
+		  var collapseDiv = $('<div/>', {
+			'id': 'js_collapse' + i,
+			'class': 'panel-collapse collapse'
+		  });
+	
+		  var panelBody = $('<div/>', {
+			'class': 'panel-body'
+		  });
+	
+		  var ol = $('<ol/>', {
+			'class': 'question-list'
+		  });
+	
+		  questions[title].forEach(function (q) {
+			ol.append($('<li/>', {
+			  'text': q
+			}));
+		  });
+	
+		  panelBody.append(ol);
+		  collapseDiv.append(panelBody);
+		  link.appendTo(panelTitle);
+		  panelTitle.appendTo(panelHeading);
+		  panelHeading.appendTo(panel);
+		  collapseDiv.appendTo(panel);
+		  panel.appendTo('#accordion');
+	
+		  i++; // Increment the counter for the next loop iteration.
+		}
+	</script>	
+	
+
 </body>
 
 </html>
