@@ -50,7 +50,7 @@ class QueryDocs():
         vectorstore = Pinecone(self.index , self.embeddings.embed_query, text_key, namespace=my_namespace)
         docs = vectorstore.similarity_search(question, k=topK)
         chain = load_qa_with_sources_chain(ChatOpenAI(model=self.model_version ,temperature=0), chain_type="stuff")
-        question = question + "Try to summarise your answer in a list. Make sure each item in a list is detailed, but does not have overlap content. Please add a <br> after each item."
+        question = question + "Try to summarise your answer in a list. Make sure each item in a list is detailed, but does not have overlap content."
         response = chain({"input_documents": docs, "question": question}, return_only_outputs=False)
         response["citations"] = get_citations(response)
         print (response)

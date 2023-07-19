@@ -95,7 +95,7 @@ def get_bot_response():
 
     response = {"Answer": {}}
     response_answer = QD.qa_pdf_with_citations(question, pdf_namespace)
-    response["Answer"]["text"]= response_answer["output_text"]
+    response["Answer"]["text"]= response_answer["output_text"].replace("\n", "<br>")
     response["Answer"]["source"]= response_answer["citations"]
     print (response['Answer']['text'])
     return jsonify(response)
