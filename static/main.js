@@ -118,7 +118,12 @@ $('#msg_input').keypress(function (e) {
  */
 $('#send_button').on('click', function (e) {
     var userMsg = $('#msg_input').val();
-    var namespace = $('#namespace_selector').val(); // Moved this line inside the click event handler.
+
+    // Collect all checked namespaces.
+    var namespaces = [];
+    $(".form-check-input:checked").each(function() {
+        namespaces.push($(this).val());
+    });
 
     // get and show message and reset input
     showUserMessage(userMsg);
@@ -133,7 +138,7 @@ $('#send_button').on('click', function (e) {
         url: '/get',
         method: 'POST',
         data: { msg: userMsg,
-            namespace: namespace},
+            namespace: JSON.stringify(namespaces)},
         success: function(data) {
             // hide loading spinner
             $('#loading_spinner').hide();

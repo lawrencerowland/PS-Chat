@@ -9,6 +9,8 @@ import glob
 ### Load environment variables
 from dotenv import load_dotenv
 import os
+import ast
+
 load_dotenv()
 neo4j_url = os.getenv('NEO4J_URL')
 neo4j_user = os.getenv('NEO4J_USER')
@@ -68,8 +70,9 @@ def home():
 @app.route('/get', methods=['POST'])
 def get_bot_response():
     question = request.form.get('msg')
-    pdf_namespace = request.form.get('namespace')  # get the namespace from the request
+    # pdf_namespace = request.form.get('namespace')  # get the namespace from the request
 
+    pdf_namespaces = ast.literal_eval(request.form.get('namespace'))
     # QG = QueryGraph(neo4j_url, neo4j_user, neo4j_password, openai_key)
     QD = QueryDocs(pinecone_api_key, pinecone_env_name, pinecone_index_name)
     
@@ -92,12 +95,15 @@ def get_bot_response():
     #     thread.start()
     # for thread in threads:
     #     thread.join()
+    if len(pdf_namespaces) == 0:
+        return jsonify({"Answer": {"text": "Please select at least one source."}})
 
     response = {"Answer": {}}
-    response_answer = QD.qa_pdf_with_citations(question, pdf_namespace)
+    response_answer = QD.qa_pdf_with_citations_from_multiple_srcs(question, pdf_namespaces)
     response["Answer"]["text"]= response_answer["output_text"].replace("\n", "<br>")
     response["Answer"]["source"]= response_answer["citations"]
     print (response['Answer']['text'])
+
     return jsonify(response)
 
 if __name__ == "__main__":
