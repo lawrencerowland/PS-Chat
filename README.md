@@ -10,28 +10,32 @@ pip install -r requirements.txt
 
 
 # Upload your own documents
-Put your documents into ``` ./docs ```  or another path to match your .env setting
+Put your documents and put them into ``` ./docs/[cat_name]/ ``` for separate folders. The names of [cat_name] will appear as tickboxes so that you can choose one or multiple sources for chatting
 
 
 # Sett your environment file as .env in the main folder
 ```
+# This is the options that if you want to talk to your graph
 NEO4J_URL="xxxxx"
 NEO4J_USER="xxxxx"
 NEO4J_PASSWORD="xxxxx"
 
+# Your openai key
 OPENAI_KEY="xxxxx"
 
+# The pinecone of storing the embeddings of your pdf documents
 PINECONE_KEY = "xxxxx"
 PINECONE_ENV = "xxxxx"
 PINECONE_INDEX = "xxxxx"
 
-# pdf doc directory
-PDF_DOC_DIR = "./docs" # change as you like
+# The directory of storing your documents
+PDF_DOC_DIR = "./docs" 
 
 # Upload parameters change as you like
 CHUNK_SIZE = 1000 
 CHUNK_OVERLAP = 0
 
+# Define the namespaces for customization. (You can ignore it)
 PINECONE_PDF_NAMESPACE = "my-pdf" 
 PINECONE_GRAPH_NAMESPACE = "my-graph" 
 
