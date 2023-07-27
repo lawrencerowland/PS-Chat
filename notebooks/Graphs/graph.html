@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "Review_project_portfolio_balance_for_2020_Q1", "label": "Review_project_portfolio_balance_for_2020_Q1", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Portfolio_management", "label": "Portfolio_management", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Home_Care_as_growth_driver", "label": "Home_Care_as_growth_driver", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Agility_for_a_Changing_Market:_", "label": "Agility_for_a_Changing_Market:_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Conduct_project_assurance_readiness_for_Brexit_Programme", "label": "Conduct_project_assurance_readiness_for_Brexit_Programme", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "P3M_Assessment", "label": "P3M_Assessment", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Election_results-\u003eBrexit_Jan_2020", "label": "Election_results-\u003eBrexit_Jan_2020", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Identify_best_practice_regulatory_project_as_examplar", "label": "Identify_best_practice_regulatory_project_as_examplar", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "P3M_Support", "label": "P3M_Support", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ongoing_compliance_with_competition_laws", "label": "Ongoing_compliance_with_competition_laws", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Operating_with_Purpose:", "label": "Operating_with_Purpose:", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cross-project_review_of_plastic_dependencies", "label": "Cross-project_review_of_plastic_dependencies", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "P3M_Optimisation", "label": "P3M_Optimisation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2019_Stretch_plastic_goals", "label": "2019_Stretch_plastic_goals", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Digital_Supply_Chain:_", "label": "Digital_Supply_Chain:_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Talent_\u0026_Capabilities:", "label": "Talent_\u0026_Capabilities:", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Partnerships_for_the_future:_", "label": "Partnerships_for_the_future:_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Reshaping_the_Asset_and_Cost_Base_", "label": "Reshaping_the_Asset_and_Cost_Base_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rescope_large_project_which_has_failed_to_deliver_in_2020", "label": "Rescope_large_project_which_has_failed_to_deliver_in_2020", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Project_Programme_recovery", "label": "Project_Programme_recovery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Margin_pressures", "label": "Margin_pressures", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Poor_project_execution", "label": "Poor_project_execution", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Non-Delivery_of_benefits", "label": "Non-Delivery_of_benefits", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Business_disruption_", "label": "Business_disruption_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Executive_sponsorship", "label": "Executive_sponsorship", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Steering_group", "label": "Steering_group", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Slowing_digitisation_pace", "label": "Slowing_digitisation_pace", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Regular_progress_updates", "label": "Regular_progress_updates", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Broad_stakeholder_representation", "label": "Broad_stakeholder_representation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Link_with_digital_programme_team", "label": "Link_with_digital_programme_team", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Appropriate_personnel", "label": "Appropriate_personnel", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Slowed_technological_change", "label": "Slowed_technological_change", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Monitor_volume_of_change_programmes", "label": "Monitor_volume_of_change_programmes", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Business_transformation_portfolio", "label": "Business_transformation_portfolio", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Acquisitions", "label": "Acquisitions", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Divestment_", "label": "Divestment_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Digital_transformation", "label": "Digital_transformation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Organisational_transformation", "label": "Organisational_transformation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Acquisition_Programme_1", "label": "Acquisition_Programme_1", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Acquisition_programme_2", "label": "Acquisition_programme_2", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Brexit_Programme", "label": "Brexit_Programme", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Disposal_programme_1", "label": "Disposal_programme_1", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Disposal_programme_2", "label": "Disposal_programme_2", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Systems_integration_programme", "label": "Systems_integration_programme", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SAP_re_implementation-programme_2", "label": "SAP_re_implementation-programme_2", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Data_management_enhancement_programme_1", "label": "Data_management_enhancement_programme_1", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Data_management_enhancement_programme_2", "label": "Data_management_enhancement_programme_2", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Digitising_R\u0026D", "label": "Digitising_R\u0026D", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Use_of_the_30_digital_platforms", "label": "Use_of_the_30_digital_platforms", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Org._transformation_programme_1", "label": "Org._transformation_programme_1", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Org._transformation_programme_2", "label": "Org._transformation_programme_2", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Key_(2017-8)_programme", "label": "Key_(2017-8)_programme", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "C4G_Connected_for_Growth_Change_programme", "label": "C4G_Connected_for_Growth_Change_programme", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Net_Revenue_Mgt_programme", "label": "Net_Revenue_Mgt_programme", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "human_capital_management_project", "label": "human_capital_management_project", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "supply_chain_improvement_project", "label": "supply_chain_improvement_project", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "regulatory_compliance project", "label": "regulatory_compliance project", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2._Sourcing", "label": "2._Sourcing", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "1._Innovation", "label": "1._Innovation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HomeCare_division", "label": "HomeCare_division", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "3._Logistics", "label": "3._Logistics", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4._Marketing", "label": "4._Marketing", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "5._Sales", "label": "5._Sales", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6._Consumer_Use", "label": "6._Consumer_Use", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "7._Consumer_insight_", "label": "7._Consumer_insight_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "1._Winning_with_brands_and_innovation", "label": "1._Winning_with_brands_and_innovation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HomeCare_strategy", "label": "HomeCare_strategy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2._Winning_in_the_marketplace", "label": "2._Winning_in_the_marketplace", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "3._Financial_Resources", "label": "3._Financial_Resources", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4._Intangible_assets", "label": "4._Intangible_assets", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6._Suppliers", "label": "6._Suppliers", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4._Winning_with_people_", "label": "4._Winning_with_people_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "1._Purposeful_people", "label": "1._Purposeful_people", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "7._Stakeholders_and_partners", "label": "7._Stakeholders_and_partners", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2018_Standards_of_leadership", "label": "2018_Standards_of_leadership", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2._Natural_Resources", "label": "2._Natural_Resources", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "3._Winning_through_continuous_improvement", "label": "3._Winning_through_continuous_improvement", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "5._Tangible_assets", "label": "5._Tangible_assets", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "5S_Smart_Programme", "label": "5S_Smart_Programme", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "1._Consumer_benefits", "label": "1._Consumer_benefits", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Alignment_with_Product_lifecycle", "label": "Alignment_with_Product_lifecycle", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2._Top_\u0026_bottom_line_growth", "label": "2._Top_\u0026_bottom_line_growth", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Faster_product_portfolio_evolution", "label": "Faster_product_portfolio_evolution", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "3._Improved_health_and_well_being", "label": "3._Improved_health_and_well_being", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Beauty/PC_division", "label": "Beauty/PC_division", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Food/Refresh_division", "label": "Food/Refresh_division", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Innovation_theme", "label": "Innovation_theme", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Responsible_and_Sustainable_Living__theme", "label": "Responsible_and_Sustainable_Living__theme", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Value_theme", "label": "Value_theme", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Quality_and_Service_theme", "label": "Quality_and_Service_theme", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Capacity_and_Capability_theme", "label": "Capacity_and_Capability_theme", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"from": "Review_project_portfolio_balance_for_2020_Q1", "to": "Portfolio_management", "width": 1}, {"from": "Review_project_portfolio_balance_for_2020_Q1", "to": "Home_Care_as_growth_driver", "width": 1}, {"from": "Review_project_portfolio_balance_for_2020_Q1", "to": "Agility_for_a_Changing_Market:_", "width": 1}, {"from": "Conduct_project_assurance_readiness_for_Brexit_Programme", "to": "P3M_Assessment", "width": 1}, {"from": "Conduct_project_assurance_readiness_for_Brexit_Programme", "to": "Election_results-\u003eBrexit_Jan_2020", "width": 1}, {"from": "Conduct_project_assurance_readiness_for_Brexit_Programme", "to": "Agility_for_a_Changing_Market:_", "width": 1}, {"from": "Identify_best_practice_regulatory_project_as_examplar", "to": "P3M_Assessment", "width": 1}, {"from": "Identify_best_practice_regulatory_project_as_examplar", "to": "P3M_Support", "width": 1}, {"from": "Identify_best_practice_regulatory_project_as_examplar", "to": "Ongoing_compliance_with_competition_laws", "width": 1}, {"from": "Identify_best_practice_regulatory_project_as_examplar", "to": "Operating_with_Purpose:", "width": 1}, {"from": "Cross-project_review_of_plastic_dependencies", "to": "P3M_Optimisation", "width": 1}, {"from": "Cross-project_review_of_plastic_dependencies", "to": "2019_Stretch_plastic_goals", "width": 1}, {"from": "Cross-project_review_of_plastic_dependencies", "to": "Digital_Supply_Chain:_", "width": 1}, {"from": "Cross-project_review_of_plastic_dependencies", "to": "Talent_\u0026_Capabilities:", "width": 1}, {"from": "Cross-project_review_of_plastic_dependencies", "to": "Operating_with_Purpose:", "width": 1}, {"from": "Cross-project_review_of_plastic_dependencies", "to": "Partnerships_for_the_future:_", "width": 1}, {"from": "Cross-project_review_of_plastic_dependencies", "to": "Reshaping_the_Asset_and_Cost_Base_", "width": 1}, {"from": "Rescope_large_project_which_has_failed_to_deliver_in_2020", "to": "Project_Programme_recovery", "width": 1}, {"from": "Rescope_large_project_which_has_failed_to_deliver_in_2020", "to": "P3M_Assessment", "width": 1}, {"from": "Rescope_large_project_which_has_failed_to_deliver_in_2020", "to": "Margin_pressures", "width": 1}, {"from": "Rescope_large_project_which_has_failed_to_deliver_in_2020", "to": "Reshaping_the_Asset_and_Cost_Base_", "width": 1}, {"from": "Rescope_large_project_which_has_failed_to_deliver_in_2020", "to": "Partnerships_for_the_future:_", "width": 1}, {"from": "Poor_project_execution", "to": "Non-Delivery_of_benefits", "width": 1}, {"from": "Poor_project_execution", "to": "Business_disruption_", "width": 1}, {"from": "Executive_sponsorship", "to": "Non-Delivery_of_benefits", "width": 1}, {"from": "Executive_sponsorship", "to": "Review_project_portfolio_balance_for_2020_Q1", "width": 1}, {"from": "Steering_group", "to": "Slowing_digitisation_pace", "width": 1}, {"from": "Steering_group", "to": "Review_project_portfolio_balance_for_2020_Q1", "width": 1}, {"from": "Regular_progress_updates", "to": "Poor_project_execution", "width": 1}, {"from": "Regular_progress_updates", "to": "Review_project_portfolio_balance_for_2020_Q1", "width": 1}, {"from": "Regular_progress_updates", "to": "Cross-project_review_of_plastic_dependencies", "width": 1}, {"from": "Broad_stakeholder_representation", "to": "Slowing_digitisation_pace", "width": 1}, {"from": "Broad_stakeholder_representation", "to": "Conduct_project_assurance_readiness_for_Brexit_Programme", "width": 1}, {"from": "Link_with_digital_programme_team", "to": "Slowing_digitisation_pace", "width": 1}, {"from": "Link_with_digital_programme_team", "to": "Review_project_portfolio_balance_for_2020_Q1", "width": 1}, {"from": "Appropriate_personnel", "to": "Slowed_technological_change", "width": 1}, {"from": "Appropriate_personnel", "to": "Identify_best_practice_regulatory_project_as_examplar", "width": 1}, {"from": "Appropriate_personnel", "to": "Conduct_project_assurance_readiness_for_Brexit_Programme", "width": 1}, {"from": "Monitor_volume_of_change_programmes", "to": "Poor_project_execution", "width": 1}, {"from": "Monitor_volume_of_change_programmes", "to": "Review_project_portfolio_balance_for_2020_Q1", "width": 1}, {"from": "Monitor_volume_of_change_programmes", "to": "Rescope_large_project_which_has_failed_to_deliver_in_2020", "width": 1}, {"from": "Business_transformation_portfolio", "to": "Acquisitions", "width": 1}, {"from": "Business_transformation_portfolio", "to": "Divestment_", "width": 1}, {"from": "Business_transformation_portfolio", "to": "Digital_transformation", "width": 1}, {"from": "Business_transformation_portfolio", "to": "Organisational_transformation", "width": 1}, {"from": "Business_transformation_portfolio", "to": "Review_project_portfolio_balance_for_2020_Q1", "width": 1}, {"from": "Acquisitions", "to": "Acquisition_Programme_1", "width": 1}, {"from": "Acquisitions", "to": "Acquisition_programme_2", "width": 1}, {"from": "Acquisitions", "to": "Brexit_Programme", "width": 1}, {"from": "Divestment_", "to": "Disposal_programme_1", "width": 1}, {"from": "Divestment_", "to": "Disposal_programme_2", "width": 1}, {"from": "Digital_transformation", "to": "Brexit_Programme", "width": 1}, {"from": "Digital_transformation", "to": "Systems_integration_programme", "width": 1}, {"from": "Digital_transformation", "to": "SAP_re_implementation-programme_2", "width": 1}, {"from": "Digital_transformation", "to": "Data_management_enhancement_programme_1", "width": 1}, {"from": "Digital_transformation", "to": "Data_management_enhancement_programme_2", "width": 1}, {"from": "Digital_transformation", "to": "Digitising_R\u0026D", "width": 1}, {"from": "Digital_transformation", "to": "Use_of_the_30_digital_platforms", "width": 1}, {"from": "Acquisition_Programme_1", "to": "Cross-project_review_of_plastic_dependencies", "width": 1}, {"from": "Organisational_transformation", "to": "Org._transformation_programme_1", "width": 1}, {"from": "Organisational_transformation", "to": "Org._transformation_programme_2", "width": 1}, {"from": "Organisational_transformation", "to": "Key_(2017-8)_programme", "width": 1}, {"from": "Organisational_transformation", "to": "Data_management_enhancement_programme_1", "width": 1}, {"from": "Organisational_transformation", "to": "Data_management_enhancement_programme_2", "width": 1}, {"from": "Organisational_transformation", "to": "Use_of_the_30_digital_platforms", "width": 1}, {"from": "Organisational_transformation", "to": "Digitising_R\u0026D", "width": 1}, {"from": "Organisational_transformation", "to": "C4G_Connected_for_Growth_Change_programme", "width": 1}, {"from": "Organisational_transformation", "to": "Systems_integration_programme", "width": 1}, {"from": "Organisational_transformation", "to": "SAP_re_implementation-programme_2", "width": 1}, {"from": "Organisational_transformation", "to": "Net_Revenue_Mgt_programme", "width": 1}, {"from": "Brexit_Programme", "to": "human_capital_management_project", "width": 1}, {"from": "Brexit_Programme", "to": "supply_chain_improvement_project", "width": 1}, {"from": "Brexit_Programme", "to": "regulatory_compliance project", "width": 1}, {"from": "Brexit_Programme", "to": "Conduct_project_assurance_readiness_for_Brexit_Programme", "width": 1}, {"from": "2._Sourcing", "to": "1._Innovation", "width": 1}, {"from": "2._Sourcing", "to": "HomeCare_division", "width": 1}, {"from": "1._Innovation", "to": "HomeCare_division", "width": 1}, {"from": "3._Logistics", "to": "2._Sourcing", "width": 1}, {"from": "3._Logistics", "to": "HomeCare_division", "width": 1}, {"from": "4._Marketing", "to": "3._Logistics", "width": 1}, {"from": "4._Marketing", "to": "HomeCare_division", "width": 1}, {"from": "5._Sales", "to": "4._Marketing", "width": 1}, {"from": "5._Sales", "to": "HomeCare_division", "width": 1}, {"from": "6._Consumer_Use", "to": "5._Sales", "width": 1}, {"from": "6._Consumer_Use", "to": "HomeCare_division", "width": 1}, {"from": "7._Consumer_insight_", "to": "6._Consumer_Use", "width": 1}, {"from": "7._Consumer_insight_", "to": "HomeCare_division", "width": 1}, {"from": "1._Winning_with_brands_and_innovation", "to": "HomeCare_strategy", "width": 1}, {"from": "2._Winning_in_the_marketplace", "to": "3._Financial_Resources", "width": 1}, {"from": "2._Winning_in_the_marketplace", "to": "4._Intangible_assets", "width": 1}, {"from": "2._Winning_in_the_marketplace", "to": "6._Suppliers", "width": 1}, {"from": "3._Financial_Resources", "to": "Rescope_large_project_which_has_failed_to_deliver_in_2020", "width": 1}, {"from": "4._Intangible_assets", "to": "Conduct_project_assurance_readiness_for_Brexit_Programme", "width": 1}, {"from": "4._Winning_with_people_", "to": "1._Purposeful_people", "width": 1}, {"from": "4._Winning_with_people_", "to": "7._Stakeholders_and_partners", "width": 1}, {"from": "1._Purposeful_people", "to": "Rescope_large_project_which_has_failed_to_deliver_in_2020", "width": 1}, {"from": "2018_Standards_of_leadership", "to": "2._Natural_Resources", "width": 1}, {"from": "2018_Standards_of_leadership", "to": "1._Purposeful_people", "width": 1}, {"from": "2._Natural_Resources", "to": "Cross-project_review_of_plastic_dependencies", "width": 1}, {"from": "3._Winning_through_continuous_improvement", "to": "5._Tangible_assets", "width": 1}, {"from": "3._Winning_through_continuous_improvement", "to": "5S_Smart_Programme", "width": 1}, {"from": "5._Tangible_assets", "to": "Identify_best_practice_regulatory_project_as_examplar", "width": 1}, {"from": "5._Tangible_assets", "to": "Rescope_large_project_which_has_failed_to_deliver_in_2020", "width": 1}, {"from": "6._Suppliers", "to": "Conduct_project_assurance_readiness_for_Brexit_Programme", "width": 1}, {"from": "6._Suppliers", "to": "Rescope_large_project_which_has_failed_to_deliver_in_2020", "width": 1}, {"from": "7._Stakeholders_and_partners", "to": "Identify_best_practice_regulatory_project_as_examplar", "width": 1}, {"from": "7._Stakeholders_and_partners", "to": "Conduct_project_assurance_readiness_for_Brexit_Programme", "width": 1}, {"from": "1._Consumer_benefits", "to": "Alignment_with_Product_lifecycle", "width": 1}, {"from": "Alignment_with_Product_lifecycle", "to": "Divestment_", "width": 1}, {"from": "Alignment_with_Product_lifecycle", "to": "Acquisitions", "width": 1}, {"from": "Alignment_with_Product_lifecycle", "to": "Review_project_portfolio_balance_for_2020_Q1", "width": 1}, {"from": "2._Top_\u0026_bottom_line_growth", "to": "Faster_product_portfolio_evolution", "width": 1}, {"from": "2._Top_\u0026_bottom_line_growth", "to": "Use_of_the_30_digital_platforms", "width": 1}, {"from": "Faster_product_portfolio_evolution", "to": "Organisational_transformation", "width": 1}, {"from": "Faster_product_portfolio_evolution", "to": "Review_project_portfolio_balance_for_2020_Q1", "width": 1}, {"from": "Faster_product_portfolio_evolution", "to": "Identify_best_practice_regulatory_project_as_examplar", "width": 1}, {"from": "Use_of_the_30_digital_platforms", "to": "Review_project_portfolio_balance_for_2020_Q1", "width": 1}, {"from": "Use_of_the_30_digital_platforms", "to": "Cross-project_review_of_plastic_dependencies", "width": 1}, {"from": "Use_of_the_30_digital_platforms", "to": "Identify_best_practice_regulatory_project_as_examplar", "width": 1}, {"from": "3._Improved_health_and_well_being", "to": "Digitising_R\u0026D", "width": 1}, {"from": "HomeCare_division", "to": "Business_transformation_portfolio", "width": 1}, {"from": "Net_Revenue_Mgt_programme", "to": "5S_Smart_Programme", "width": 1}, {"from": "Beauty/PC_division", "to": "HomeCare_division", "width": 1}, {"from": "Food/Refresh_division", "to": "HomeCare_division", "width": 1}, {"from": "human_capital_management_project", "to": "Rescope_large_project_which_has_failed_to_deliver_in_2020", "width": 1}, {"from": "regulatory_compliance project", "to": "Identify_best_practice_regulatory_project_as_examplar", "width": 1}, {"from": "Digital_Supply_Chain:_", "to": "Innovation_theme", "width": 1}, {"from": "Talent_\u0026_Capabilities:", "to": "Responsible_and_Sustainable_Living__theme", "width": 1}, {"from": "Agility_for_a_Changing_Market:_", "to": "Innovation_theme", "width": 1}, {"from": "Operating_with_Purpose:", "to": "Value_theme", "width": 1}, {"from": "Partnerships_for_the_future:_", "to": "Quality_and_Service_theme", "width": 1}, {"from": "Reshaping_the_Asset_and_Cost_Base_", "to": "Value_theme", "width": 1}, {"from": "Reshaping_the_Asset_and_Cost_Base_", "to": "Capacity_and_Capability_theme", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
