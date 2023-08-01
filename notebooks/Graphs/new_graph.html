@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "Cost estimating process", "label": "Cost estimating process", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "project delivery", "label": "project delivery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cost estimate", "label": "Cost estimate", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "key factor", "label": "key factor", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "over time", "label": "over time", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "as range", "label": "as range", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "not single figure", "label": "not single figure", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "to project scope", "label": "to project scope", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "evidence-based", "label": "evidence-based", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "transparent and robust", "label": "transparent and robust", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "and assured", "label": "and assured", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "by project leadership", "label": "by project leadership", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "decision-making", "label": "decision-making", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "of project discipline", "label": "of project discipline", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "qualified and experienced personnel", "label": "qualified and experienced personnel", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "on clear assumptions", "label": "on clear assumptions", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "improved", "label": "improved", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "risk-adjusted", "label": "risk-adjusted", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "by data and evidence", "label": "by data and evidence", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "and validated", "label": "and validated", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "using appropriate methodology", "label": "using appropriate methodology", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "on accurate and reliable data", "label": "on accurate and reliable data", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "by benchmarking", "label": "by benchmarking", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "with clear assumptions", "label": "with clear assumptions", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "by collaborative team", "label": "by collaborative team", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "and assured by independent parties", "label": "and assured by independent parties", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "on standard cost breakdown structure", "label": "on standard cost breakdown structure", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "on clear project brief", "label": "on clear project brief", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "by right team", "label": "by right team", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "by data integrity", "label": "by data integrity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "decisions", "label": "decisions", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "stage gate milestones", "label": "stage gate milestones", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "budget and decision-making", "label": "budget and decision-making", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "project success", "label": "project success", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cost estimate methodology", "label": "Cost estimate methodology", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "based on project maturity", "label": "based on project maturity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "deterministic or probabilistic", "label": "deterministic or probabilistic", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "top-down or bottom-up", "label": "top-down or bottom-up", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cost estimating team", "label": "Cost estimating team", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "between approaches", "label": "between approaches", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Project size", "label": "Project size", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "method", "label": "method", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Complexity", "label": "Complexity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Project stage", "label": "Project stage", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Objectives", "label": "Objectives", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Parametric cost estimating", "label": "Parametric cost estimating", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "early calculations", "label": "early calculations", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "comparisons", "label": "comparisons", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "First principles cost estimating", "label": "First principles cost estimating", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "on complete data", "label": "on complete data", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "for FBC stage gate", "label": "for FBC stage gate", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "for medium/high design maturity", "label": "for medium/high design maturity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "for sensitivity analysis", "label": "for sensitivity analysis", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "for identification of cost drivers", "label": "for identification of cost drivers", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "laborious", "label": "laborious", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Analogy cost estimating", "label": "Analogy cost estimating", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "in repeatable projects", "label": "in repeatable projects", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "in calibration exercises", "label": "in calibration exercises", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "in validation exercises", "label": "in validation exercises", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Expert opinion", "label": "Expert opinion", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "for novel projects", "label": "for novel projects", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "for complex projects", "label": "for complex projects", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "for early stages", "label": "for early stages", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "for option comparison", "label": "for option comparison", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Scenario-based modeling", "label": "Scenario-based modeling", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "rigorous cost estimates", "label": "rigorous cost estimates", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "for complex/novel projects", "label": "for complex/novel projects", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "option comparison analysis", "label": "option comparison analysis", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Method of moments", "label": "Method of moments", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "combined probability of risks", "label": "combined probability of risks", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "for repetitive projects", "label": "for repetitive projects", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "for articulating combined probability", "label": "for articulating combined probability", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Quantitative risk analysis", "label": "Quantitative risk analysis", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "for late stages", "label": "for late stages", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "on complete data sets", "label": "on complete data sets", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "to input data quality", "label": "to input data quality", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SBM", "label": "SBM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "for decommissioning project planning", "label": "for decommissioning project planning", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "rigorous and reliable cost estimates", "label": "rigorous and reliable cost estimates", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "on explicit assumptions", "label": "on explicit assumptions", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Base cost estimate", "label": "Base cost estimate", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "to review and understand implications", "label": "to review and understand implications", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "with Level 0 breakdown", "label": "with Level 0 breakdown", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "to cost breakdown structure", "label": "to cost breakdown structure", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Base cost estimate granularity", "label": "Base cost estimate granularity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "on design maturity", "label": "on design maturity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Escalation", "label": "Escalation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "to given point in time", "label": "to given point in time", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "for inflation between current and historical/future date", "label": "for inflation between current and historical/future date", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Uncertainty", "label": "Uncertainty", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "by decisions, lack of data maturity, and bias/error", "label": "by decisions, lack of data maturity, and bias/error", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Decisions", "label": "Decisions", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "variability", "label": "variability", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Lack of data maturity", "label": "Lack of data maturity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "on generic or extrapolated information", "label": "on generic or extrapolated information", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bias/error", "label": "Bias/error", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "assumptions that lean towards inaccurate values", "label": "assumptions that lean towards inaccurate values", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Risk cost estimating methods", "label": "Risk cost estimating methods", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "scenario-based modeling, method of moments, and quantitative risk analysis", "label": "scenario-based modeling, method of moments, and quantitative risk analysis", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Opportunities", "label": "Opportunities", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "positive effects on objectives", "label": "positive effects on objectives", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Material/critical risks", "label": "Material/critical risks", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "project continuity", "label": "project continuity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Contingency", "label": "Contingency", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "risks that materialize", "label": "risks that materialize", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cost estimate report", "label": "Cost estimate report", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "project decisions", "label": "project decisions", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "rationale, methodology, evidence, assumptions, costs, risks, and recommendations", "label": "rationale, methodology, evidence, assumptions, costs, risks, and recommendations", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Anticipated Final Cost", "label": "Anticipated Final Cost", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "target out-turn cost", "label": "target out-turn cost", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "base cost estimate, uncertainty, and risk allowance", "label": "base cost estimate, uncertainty, and risk allowance", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "for probability distribution", "label": "for probability distribution", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cost estimate range", "label": "Cost estimate range", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "on maturity of input data", "label": "on maturity of input data", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "against target thresholds", "label": "against target thresholds", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Review and assurance plan", "label": "Review and assurance plan", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "inputs, outputs, and interactions", "label": "inputs, outputs, and interactions", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "types of reviews", "label": "types of reviews", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Sign-off process", "label": "Sign-off process", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "and challenges cost estimate data", "label": "and challenges cost estimate data", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "relationship with scope, schedule, options, and commercial strategy", "label": "relationship with scope, schedule, options, and commercial strategy", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"from": "Cost estimating process", "title": "guides", "to": "project delivery", "width": 1}, {"from": "Cost estimate", "title": "is", "to": "key factor", "width": 1}, {"from": "Cost estimate", "title": "evolves", "to": "over time", "width": 1}, {"from": "Cost estimate", "title": "should be presented", "to": "as range", "width": 1}, {"from": "Cost estimate", "title": "is", "to": "not single figure", "width": 1}, {"from": "Cost estimate", "title": "is linked", "to": "to project scope", "width": 1}, {"from": "Cost estimate", "title": "should be", "to": "evidence-based", "width": 1}, {"from": "Cost estimate", "title": "should be", "to": "transparent and robust", "width": 1}, {"from": "Cost estimate", "title": "should be reviewed", "to": "and assured", "width": 1}, {"from": "Cost estimate", "title": "should be owned", "to": "by project leadership", "width": 1}, {"from": "Cost estimate", "title": "supports", "to": "decision-making", "width": 1}, {"from": "Cost estimate", "title": "is part", "to": "of project discipline", "width": 1}, {"from": "Cost estimate", "title": "requires", "to": "qualified and experienced personnel", "width": 1}, {"from": "Cost estimate", "title": "should be based", "to": "on clear assumptions", "width": 1}, {"from": "Cost estimate", "title": "should be continuously", "to": "improved", "width": 1}, {"from": "Cost estimate", "title": "should be", "to": "risk-adjusted", "width": 1}, {"from": "Cost estimate", "title": "should be supported", "to": "by data and evidence", "width": 1}, {"from": "Cost estimate", "title": "should be reviewed", "to": "and validated", "width": 1}, {"from": "Cost estimate", "title": "should be produced", "to": "using appropriate methodology", "width": 1}, {"from": "Cost estimate", "title": "should be based", "to": "on accurate and reliable data", "width": 1}, {"from": "Cost estimate", "title": "should be supported", "to": "by benchmarking", "width": 1}, {"from": "Cost estimate", "title": "should be documented", "to": "with clear assumptions", "width": 1}, {"from": "Cost estimate", "title": "should be produced", "to": "by collaborative team", "width": 1}, {"from": "Cost estimate", "title": "should be reviewed", "to": "and assured by independent parties", "width": 1}, {"from": "Cost estimate", "title": "should be based", "to": "on standard cost breakdown structure", "width": 1}, {"from": "Cost estimate", "title": "should be based", "to": "on clear project brief", "width": 1}, {"from": "Cost estimate", "title": "should be produced", "to": "by right team", "width": 1}, {"from": "Cost estimate", "title": "should be supported", "to": "by data integrity", "width": 1}, {"from": "Cost estimate", "title": "informs", "to": "decisions", "width": 1}, {"from": "Cost estimate", "title": "supports", "to": "stage gate milestones", "width": 1}, {"from": "Cost estimate", "title": "supports", "to": "budget and decision-making", "width": 1}, {"from": "Cost estimate", "title": "supports", "to": "project success", "width": 1}, {"from": "Cost estimate methodology", "title": "should be selected", "to": "based on project maturity", "width": 1}, {"from": "Cost estimate methodology", "title": "should be", "to": "deterministic or probabilistic", "width": 1}, {"from": "Cost estimate methodology", "title": "should be", "to": "top-down or bottom-up", "width": 1}, {"from": "Cost estimating team", "title": "chooses", "to": "between approaches", "width": 1}, {"from": "Project size", "title": "influences", "to": "method", "width": 1}, {"from": "Complexity", "title": "influences", "to": "method", "width": 1}, {"from": "Project stage", "title": "influences", "to": "method", "width": 1}, {"from": "Objectives", "title": "influence", "to": "method", "width": 1}, {"from": "Parametric cost estimating", "title": "serves", "to": "early calculations", "width": 1}, {"from": "Parametric cost estimating", "title": "enables", "to": "comparisons", "width": 1}, {"from": "First principles cost estimating", "title": "relies", "to": "on complete data", "width": 1}, {"from": "First principles cost estimating", "title": "is best", "to": "for FBC stage gate", "width": 1}, {"from": "First principles cost estimating", "title": "is best", "to": "for medium/high design maturity", "width": 1}, {"from": "First principles cost estimating", "title": "is suitable", "to": "for sensitivity analysis", "width": 1}, {"from": "First principles cost estimating", "title": "is suitable", "to": "for identification of cost drivers", "width": 1}, {"from": "First principles cost estimating", "title": "is", "to": "laborious", "width": 1}, {"from": "Analogy cost estimating", "title": "is useful", "to": "in repeatable projects", "width": 1}, {"from": "Analogy cost estimating", "title": "is useful", "to": "in calibration exercises", "width": 1}, {"from": "Analogy cost estimating", "title": "is useful", "to": "in validation exercises", "width": 1}, {"from": "Expert opinion", "title": "is adequate", "to": "for novel projects", "width": 1}, {"from": "Expert opinion", "title": "is adequate", "to": "for complex projects", "width": 1}, {"from": "Expert opinion", "title": "is adequate", "to": "for early stages", "width": 1}, {"from": "Expert opinion", "title": "is adequate", "to": "for option comparison", "width": 1}, {"from": "Scenario-based modeling", "title": "provides", "to": "rigorous cost estimates", "width": 1}, {"from": "Scenario-based modeling", "title": "is suitable", "to": "for complex/novel projects", "width": 1}, {"from": "Scenario-based modeling", "title": "is suitable", "to": "for early stages", "width": 1}, {"from": "Scenario-based modeling", "title": "serves", "to": "option comparison analysis", "width": 1}, {"from": "Method of moments", "title": "calculates", "to": "combined probability of risks", "width": 1}, {"from": "Method of moments", "title": "is useful", "to": "for repetitive projects", "width": 1}, {"from": "Method of moments", "title": "is useful", "to": "for articulating combined probability", "width": 1}, {"from": "Quantitative risk analysis", "title": "is common", "to": "for late stages", "width": 1}, {"from": "Quantitative risk analysis", "title": "relies", "to": "on complete data sets", "width": 1}, {"from": "Quantitative risk analysis", "title": "is sensitive", "to": "to input data quality", "width": 1}, {"from": "SBM", "title": "was used", "to": "for decommissioning project planning", "width": 1}, {"from": "SBM", "title": "provided", "to": "rigorous and reliable cost estimates", "width": 1}, {"from": "SBM", "title": "was suitable", "to": "for complex/novel projects", "width": 1}, {"from": "SBM", "title": "was suitable", "to": "for early stages", "width": 1}, {"from": "SBM", "title": "built", "to": "on explicit assumptions", "width": 1}, {"from": "SBM", "title": "served", "to": "option comparison analysis", "width": 1}, {"from": "Base cost estimate", "title": "is critical", "to": "to review and understand implications", "width": 1}, {"from": "Base cost estimate", "title": "is consistent", "to": "with Level 0 breakdown", "width": 1}, {"from": "Base cost estimate", "title": "is aligned", "to": "to cost breakdown structure", "width": 1}, {"from": "Base cost estimate granularity", "title": "depends", "to": "on design maturity", "width": 1}, {"from": "Escalation", "title": "is base dated", "to": "to given point in time", "width": 1}, {"from": "Escalation", "title": "accounts", "to": "for inflation between current and historical/future date", "width": 1}, {"from": "Uncertainty", "title": "is driven", "to": "by decisions, lack of data maturity, and bias/error", "width": 1}, {"from": "Decisions", "title": "introduce", "to": "variability", "width": 1}, {"from": "Lack of data maturity", "title": "is based", "to": "on generic or extrapolated information", "width": 1}, {"from": "Bias/error", "title": "introduces", "to": "assumptions that lean towards inaccurate values", "width": 1}, {"from": "Risk cost estimating methods", "title": "include", "to": "scenario-based modeling, method of moments, and quantitative risk analysis", "width": 1}, {"from": "Opportunities", "title": "have", "to": "positive effects on objectives", "width": 1}, {"from": "Material/critical risks", "title": "compromise", "to": "project continuity", "width": 1}, {"from": "Contingency", "title": "addresses", "to": "risks that materialize", "width": 1}, {"from": "Cost estimate report", "title": "supports", "to": "project decisions", "width": 1}, {"from": "Cost estimate report", "title": "includes", "to": "rationale, methodology, evidence, assumptions, costs, risks, and recommendations", "width": 1}, {"from": "Anticipated Final Cost", "title": "is", "to": "target out-turn cost", "width": 1}, {"from": "Anticipated Final Cost", "title": "includes", "to": "base cost estimate, uncertainty, and risk allowance", "width": 1}, {"from": "Anticipated Final Cost", "title": "is adjusted", "to": "for probability distribution", "width": 1}, {"from": "Cost estimate range", "title": "depends", "to": "on maturity of input data", "width": 1}, {"from": "Cost estimate range", "title": "is evaluated", "to": "against target thresholds", "width": 1}, {"from": "Cost estimate range", "title": "informs", "to": "budget and decision-making", "width": 1}, {"from": "Review and assurance plan", "title": "clarifies", "to": "inputs, outputs, and interactions", "width": 1}, {"from": "Review and assurance plan", "title": "identifies", "to": "types of reviews", "width": 1}, {"from": "Sign-off process", "title": "clarifies", "to": "and challenges cost estimate data", "width": 1}, {"from": "Sign-off process", "title": "validates", "to": "relationship with scope, schedule, options, and commercial strategy", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
