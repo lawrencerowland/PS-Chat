@@ -70,11 +70,41 @@ def home():
 @app.route('/get', methods=['POST'])
 def get_bot_response():
     question = request.form.get('msg')
-    # pdf_namespace = request.form.get('namespace')  # get the namespace from the request
-
+    
     pdf_namespaces = ast.literal_eval(request.form.get('namespace'))
-    # QG = QueryGraph(neo4j_url, neo4j_user, neo4j_password, openai_key)
-    QD = QueryDocs(pinecone_api_key, pinecone_env_name, pinecone_index_name)
+    if len(pdf_namespaces) == 0:
+        return jsonify({"Answer": {"text": "Please select at least one source."}})
+    
+
+
+    chat_mode = ast.literal_eval(request.form.get('chat_mode'))
+    print (f"Question: {question} and chat mode: {chat_mode}")
+    if chat_mode=="PDF":
+        QD = QueryDocs(pinecone_api_key, pinecone_env_name, pinecone_index_name)
+        response = {"Answer": {}}
+        response_answer = QD.qa_pdf_with_citations_from_multiple_srcs(question, pdf_namespaces)
+        response["Answer"]["text"]= response_answer["output_text"].replace("\n", "<br>")
+        response["Answer"]["source"]= response_answer["citations"]
+        print (response['Answer']['text'])
+        return jsonify(response)
+
+    else:
+        response = {"Answer": {}}
+        QG = QueryGraph(neo4j_url, neo4j_user, neo4j_password, openai_key)
+        response_answer_from_graph = QG.graph_cypher_qa(question)
+        
+
+        QD = QueryDocs(pinecone_api_key, pinecone_env_name, pinecone_index_name)
+        response_answer_from_pdf = QD.qa_pdf_with_citations_from_multiple_srcs(question, pdf_namespaces)
+        
+        
+        response_all = "<b>Response from graph: </b> \n" + response_answer_from_graph + "\n" + "<b>Response from pdf: </b> \n" + response_answer_from_pdf["output_text"]
+
+        response["Answer"]["source"]= response_answer_from_pdf["citations"]
+        response["Answer"]["text"]= response_all.replace("\n", "<br>")
+
+        return jsonify(response)
+    
     
     # response = {}
     # def run_exp(exp_name, func, *args, **kwargs):
@@ -95,16 +125,6 @@ def get_bot_response():
     #     thread.start()
     # for thread in threads:
     #     thread.join()
-    if len(pdf_namespaces) == 0:
-        return jsonify({"Answer": {"text": "Please select at least one source."}})
-
-    response = {"Answer": {}}
-    response_answer = QD.qa_pdf_with_citations_from_multiple_srcs(question, pdf_namespaces)
-    response["Answer"]["text"]= response_answer["output_text"].replace("\n", "<br>")
-    response["Answer"]["source"]= response_answer["citations"]
-    print (response['Answer']['text'])
-
-    return jsonify(response)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000, debug=True)

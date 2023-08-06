@@ -124,7 +124,8 @@ $('#send_button').on('click', function (e) {
     $(".form-check-input:checked").each(function() {
         namespaces.push($(this).val());
     });
-
+    var selectedChatMode = $(".chat-mode:checked").val();
+    // print (selectedChatMode)
     // get and show message and reset input
     showUserMessage(userMsg);
     $('#msg_input').val('');
@@ -138,7 +139,9 @@ $('#send_button').on('click', function (e) {
         url: '/get',
         method: 'POST',
         data: { msg: userMsg,
-            namespace: JSON.stringify(namespaces)},
+            namespace: JSON.stringify(namespaces),
+            chat_mode: JSON.stringify(selectedChatMode)
+        },
         success: function(data) {
             // hide loading spinner
             $('#loading_spinner').hide();

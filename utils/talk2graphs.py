@@ -59,6 +59,7 @@ class QueryGraph():
         
         chain = GraphCypherQAChain.from_llm(ChatOpenAI(model=self.model_version, temperature=0), graph=graph, verbose=True,)
         response = chain.run(question)
+        print (response)
         return response
     
     # Optimissed version of Cyher Query

@@ -71,7 +71,26 @@
 					<!-- help container -->
 					<div class="panel-group" id="accordion">
 					
-
+					<!-- Chat Mode -->
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">Chat Mode</h4> <!-- Title changed to Chat Mode -->
+						</div>
+						<div class="panel-body">
+							<div class="form-check">
+								<input class="form-check-input chat-mode" type="radio" name="chat_mode" value="PDF" id="pdf_mode" checked>
+								<label class="form-check-label" for="pdf_mode">
+									PDF
+								</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input chat-mode" type="radio" name="chat_mode" value="PDF and Graph" id="pdf_graph_mode">
+								<label class="form-check-label" for="pdf_graph_mode">
+									PDF and Graph
+								</label>
+							</div>
+						</div>
+					</div>
 
 					<!-- Namespace checkboxes -->
 					<div class="panel panel-default">
@@ -134,10 +153,8 @@
 								</div>
 							</div>
 						</div>
-						
-
-
 					</div>
+					
 					
 
 			</div>
@@ -156,59 +173,50 @@
 
 	<script>
 		var questions = JSON.parse('{{ questions | safe }}');
-		var i = 1; // We'll use this to create unique ids for the collapsible divs.
+		var i = 0;
+	
+		var bigPanel = $('<div/>', { 'class': 'panel panel-default' });
+		var bigPanelHeading = $('<div/>', { 'class': 'panel-heading' });
+		var bigPanelTitle = $('<h4/>', { 'class': 'panel-title' });
+		var bigPanelLink = $('<a/>', { 'class': 'accordion-toggle', 'data-toggle': 'collapse', 'data-parent': '#accordion', 'href': '#internal_collapse_custom' + i, 'text': 'Example Questions' });
+	
+		bigPanelLink.appendTo(bigPanelTitle);
+		bigPanelTitle.appendTo(bigPanelHeading);
+		bigPanelHeading.appendTo(bigPanel);
+	
+		var bigPanelCollapse = $('<div/>', { 'id': 'internal_collapse_custom' + i, 'class': 'panel-collapse collapse' });
+		var bigPanelBody = $('<div/>', { 'class': 'panel-body', 'id': 'documents-accordion-custom' });
+	
+		i++;
 	
 		for (var title in questions) {
-		  var panel = $('<div/>', {
-			'class': 'panel panel-default'
-		  });
+			var panel = $('<div/>', { 'class': 'panel panel-default' });
+			var panelHeading = $('<div/>', { 'class': 'panel-heading' });
+			var panelTitle = $('<h4/>', { 'class': 'panel-title' });
+			var link = $('<a/>', { 'class': 'accordion-toggle', 'data-toggle': 'collapse', 'data-parent': '#documents-accordion-custom', 'href': '#doc_collapse_custom' + i, 'text': title });
+			var collapseDiv = $('<div/>', { 'id': 'doc_collapse_custom' + i, 'class': 'panel-collapse collapse' });
+			var panelBody = $('<div/>', { 'class': 'panel-body' });
+			var ol = $('<ol/>', { 'class': 'question-list' });
 	
-		  var panelHeading = $('<div/>', {
-			'class': 'panel-heading'
-		  });
+			questions[title].forEach(function (q) {
+				ol.append($('<li/>', { 'text': q }));
+			});
 	
-		  var panelTitle = $('<h4/>', {
-			'class': 'panel-title'
-		  });
+			panelBody.append(ol);
+			collapseDiv.append(panelBody);
+			link.appendTo(panelTitle);
+			panelTitle.appendTo(panelHeading);
+			panelHeading.appendTo(panel);
+			collapseDiv.appendTo(panel);
+			panel.appendTo(bigPanelBody);
 	
-		  var link = $('<a/>', {
-			'class': 'accordion-toggle',
-			'data-toggle': 'collapse',
-			'data-parent': '#accordion',
-			'href': '#js_collapse' + i,
-			'text': title
-		  });
-	
-		  var collapseDiv = $('<div/>', {
-			'id': 'js_collapse' + i,
-			'class': 'panel-collapse collapse'
-		  });
-	
-		  var panelBody = $('<div/>', {
-			'class': 'panel-body'
-		  });
-	
-		  var ol = $('<ol/>', {
-			'class': 'question-list'
-		  });
-	
-		  questions[title].forEach(function (q) {
-			ol.append($('<li/>', {
-			  'text': q
-			}));
-		  });
-	
-		  panelBody.append(ol);
-		  collapseDiv.append(panelBody);
-		  link.appendTo(panelTitle);
-		  panelTitle.appendTo(panelHeading);
-		  panelHeading.appendTo(panel);
-		  collapseDiv.appendTo(panel);
-		  panel.appendTo('#accordion');
-	
-		  i++; // Increment the counter for the next loop iteration.
+			i++;
 		}
-	</script>	
+	
+		bigPanelBody.appendTo(bigPanelCollapse);
+		bigPanelCollapse.appendTo(bigPanel);
+		bigPanel.appendTo('#accordion');
+	</script>
 	
 
 </body>
