@@ -90,8 +90,11 @@ def get_bot_response():
 
     else:
         response = {"Answer": {}}
-        QG = QueryGraph(neo4j_url, neo4j_user, neo4j_password, openai_key)
-        response_answer_from_graph = QG.graph_cypher_qa(question)
+        try:
+            QG = QueryGraph(neo4j_url, neo4j_user, neo4j_password, openai_key)
+            response_answer_from_graph = QG.graph_cypher_qa(question)
+        except Exception as e:
+            response_answer_from_graph = "There is no asscoiated information from graph."            
         
 
         QD = QueryDocs(pinecone_api_key, pinecone_env_name, pinecone_index_name)
