@@ -101,7 +101,7 @@ def get_bot_response():
         response_answer_from_pdf = QD.qa_pdf_with_citations_from_multiple_srcs(question, pdf_namespaces)
         
         
-        response_all = "<b>\n Response from graph: </b> \n" + response_answer_from_graph + "\n" + "<b>Response from pdf: </b> \n" + response_answer_from_pdf["output_text"]
+        response_all = "<b>\n Response from graph: </b> \n" + response_answer_from_graph + "\n" + "<b>Response from pdf: </b>" + response_answer_from_pdf["output_text"]
 
         response["Answer"]["source"]= response_answer_from_pdf["citations"]
         response["Answer"]["text"]= response_all.replace("\n", "<br>")
