@@ -121,7 +121,7 @@ $('#send_button').on('click', function (e) {
 
     // Collect all checked namespaces.
     var namespaces = [];
-    $(".form-check-input:checked").each(function() {
+    $(".form-check-input[type='checkbox']:checked").not(".chat-mode").each(function() {
         namespaces.push($(this).val());
     });
     var selectedChatMode = $(".chat-mode:checked").val();

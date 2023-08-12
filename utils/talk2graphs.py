@@ -91,7 +91,7 @@ class QueryGraph():
                             Hint: Relevant names of nodes: {related_node_names} in the database.
                                   Relevant labels of nodes: {related_node_types} in the database. 
                                   Relevant edges type: {related_edges} in the database."""
-        print (additional_hint)
+        # print (additional_hint)
         # Enquiry the database as graph cypher QA
         graph = Neo4jGraph(
                             url=self.neo4j_url,

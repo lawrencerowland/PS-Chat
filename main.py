@@ -71,6 +71,8 @@ def get_bot_response():
     # get all parameters
     pdf_namespaces = ast.literal_eval(request.form.get('namespace'))
     chat_mode = ast.literal_eval(request.form.get('chat_mode'))
+    print (pdf_namespaces)
+    print (chat_mode)
 
     # check document sources
     if len(pdf_namespaces) == 0 and chat_mode!="Graph":
