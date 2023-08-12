@@ -98,7 +98,7 @@ class QueryGraph():
                             username=self.neo4j_user,
                             password=self.neo4j_password)
         
-        chain = GraphCypherQAChain.from_llm(ChatOpenAI(model=self.model_version,temperature=0), graph=graph, verbose=True,)
+        chain = GraphCypherQAChain.from_llm(ChatOpenAI(model=self.model_version,temperature=0.5), graph=graph, verbose=True,)
         response = chain.run(question + additional_hint)
 
         return response
