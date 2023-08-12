@@ -64,7 +64,7 @@ class QueryGraph():
     
     # Optimissed version of Cyher Query
     def optimised_cyher(self, question, pinecone_api_key,pinecone_env_name,pinecone_index_name,
-                        my_namespace="graph", text_key="text", topK=20):
+                        my_namespace="graph", text_key="name", topK=20):
         
         pinecone.init(api_key=pinecone_api_key,environment=pinecone_env_name)
         index = pinecone.Index(pinecone_index_name)
@@ -76,19 +76,22 @@ class QueryGraph():
         related_node_names = ""
         related_node_types = ""
         related_edges = ""
-        for d in docs: 
+        for d in docs:
             if d.metadata["info_type"] == "node_names":
-                related_node_names+=d.page_content + ", "
+                related_node_names+=d.page_content + "; "
             
             if d.metadata["info_type"] == "node_types":
-                related_node_types+=d.page_content + ", "
+                related_node_types+=d.page_content + "; "
             
             if d.metadata["info_type"] == "edges":
-                related_edges+=d.page_content + ", "
+                related_edges+=d.page_content + "; "
 
         # Build additional hint
-        additional_hint = f"""If you don't need these information, please ignore this. Hint: Please refer the names of nodes:{related_node_names} or the labels of nodes: {related_node_types} or the edges type: {related_edges} if necessary. """
-
+        additional_hint = f"""I used KNN and Pinecone to find the most relevant nodes, node types and edges closed to the questions which might be helpful for you.
+                            Hint: Relevant names of nodes: {related_node_names} in the database.
+                                  Relevant labels of nodes: {related_node_types} in the database. 
+                                  Relevant edges type: {related_edges} in the database. You can ignore this hint if you want to."""
+        print (additional_hint)
         # Enquiry the database as graph cypher QA
         graph = Neo4jGraph(
                             url=self.neo4j_url,

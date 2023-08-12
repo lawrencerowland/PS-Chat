@@ -21,8 +21,7 @@ pinecone_env_name = os.getenv('PINECONE_ENV')
 pinecone_index_name = os.getenv('PINECONE_INDEX')
 os.environ['OPENAI_API_KEY'] = openai_key
 
-# pdf_namespace = os.getenv('PINECONE_PDF_NAMESPACE')
-graph_namespace = os.getenv('PINECONE_GRAPH_NAMESPACE')
+
 
 app = Flask(__name__)
 
@@ -71,14 +70,15 @@ def home():
 def get_bot_response():
     question = request.form.get('msg')
     
+    # get all parameters
     pdf_namespaces = ast.literal_eval(request.form.get('namespace'))
-    if len(pdf_namespaces) == 0:
-        return jsonify({"Answer": {"text": "Please select at least one source."}})
-    
-
-
     chat_mode = ast.literal_eval(request.form.get('chat_mode'))
-    print (f"Question: {question} and chat mode: {chat_mode}")
+
+    # check document sources
+    if len(pdf_namespaces) == 0 and chat_mode!="Graph":
+        return jsonify({"Answer": {"text": "Please select at least one source for PDF mode."}})
+    
+    # check chat mode
     if chat_mode=="PDF":
         QD = QueryDocs(pinecone_api_key, pinecone_env_name, pinecone_index_name)
         response = {"Answer": {}}
@@ -88,11 +88,24 @@ def get_bot_response():
         print (response['Answer']['text'])
         return jsonify(response)
 
+
+    elif chat_mode=="Graph":
+        response = {"Answer": {}}
+        
+        try:
+            QG = QueryGraph(neo4j_url, neo4j_user, neo4j_password, openai_key)
+            response_answer_from_graph = QG.optimised_cyher(question, pinecone_api_key,pinecone_env_name,pinecone_index_name)
+        except Exception as e:
+            response_answer_from_graph = "There is no asscoiated information from graph."
+        
+        response["Answer"]["text"]= response_answer_from_graph.replace("\n", "<br>")
+        return jsonify(response)
+
     else:
         response = {"Answer": {}}
         try:
             QG = QueryGraph(neo4j_url, neo4j_user, neo4j_password, openai_key)
-            response_answer_from_graph = QG.graph_cypher_qa(question)
+            response_answer_from_graph = QG.optimised_cyher(question, pinecone_api_key,pinecone_env_name,pinecone_index_name)
         except Exception as e:
             response_answer_from_graph = "There is no asscoiated information from graph."            
         
