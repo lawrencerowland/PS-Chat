@@ -90,7 +90,7 @@ class QueryGraph():
         additional_hint = f"""I used KNN and Pinecone to find the most relevant nodes, node types and edges closed to the questions which might be helpful for you.
                             Hint: Relevant names of nodes: {related_node_names} in the database.
                                   Relevant labels of nodes: {related_node_types} in the database. 
-                                  Relevant edges type: {related_edges} in the database. You can ignore this hint if you want to."""
+                                  Relevant edges type: {related_edges} in the database."""
         print (additional_hint)
         # Enquiry the database as graph cypher QA
         graph = Neo4jGraph(
