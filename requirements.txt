@@ -112,9 +112,7 @@ tenacity
 threadpoolctl
 tiktoken
 tokenizers
-torch
 tqdm
-transformers
 typer
 typing-inspect
 unstructured
