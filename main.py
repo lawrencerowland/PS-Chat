@@ -21,8 +21,6 @@ pinecone_env_name = os.getenv('PINECONE_ENV')
 pinecone_index_name = os.getenv('PINECONE_INDEX')
 os.environ['OPENAI_API_KEY'] = openai_key
 
-
-
 app = Flask(__name__)
 
 def get_files(directory_path):
