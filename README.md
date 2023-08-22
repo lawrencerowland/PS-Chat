@@ -8,12 +8,13 @@ pip install -r requirements.txt
 
 ```
 
-
 # Upload your own documents
-Put your documents and put them into ``` ./docs/[cat_name]/ ``` for separate folders. The names of [cat_name] will appear as tickboxes so that you can choose one or multiple sources for chatting
+Put your documents into ``` ./docs/[cat_name]/ ``` for separate folders. The names of [cat_name] will appear as tickboxes so that you can choose one or multiple sources for chatting
 
+# Upload your own questions
+Create a  ```questions.txt``` file for each category of documents and put each question on a new line. Put your example questions in the ``` ./docs/[cat_name]/ ``` folder containing the relevent documents for that set of questions.
 
-# Sett your environment file as .env in the main folder
+# Set your environment file as .env in the main folder
 ```
 # This is the options that if you want to talk to your graph
 NEO4J_URL="xxxxx"
