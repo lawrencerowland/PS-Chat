@@ -8,13 +8,13 @@ pip install -r requirements.txt
 
 ```
 
+# Upload your own documents
+Put your documents into ``` ./docs/[cat_name]/ ``` for separate folders. The names of [cat_name] will appear as tickboxes so that you can choose one or multiple sources for chatting
 
-# Step 1. Prepare your own documents for chatbot talk to PDF documents
+# Upload your own questions
+Create a  ```questions.txt``` file for each category of documents and put each question on a new line. Put your example questions in the ``` ./docs/[cat_name]/ ``` folder containing the relevent documents for that set of questions.
 
-Put your documents into ``` ./docs/[category_name]/ ``` . Each [category_name] of subfolder will appear as tickboxes so that you can choose one or multiple categories of sources of PDF document for reference. Please create a subfolder inside the ``` ./docs ``` with careful naming [category_name], because it will be used for storing your document in cloud vector database
-
-
-# Step 2. Set your environment file as .env in the main folder
+# Set your environment file as .env in the main folder
 ```
 # Graph Database for Chatbot talk to documents
 NEO4J_URL="xxxxx"
