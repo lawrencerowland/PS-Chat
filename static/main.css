@@ -172,11 +172,17 @@ body {
 	border-radius: 50px;
 	cursor: pointer;
 	padding: 12px;
+	border: 0px;
 
 	color: #fff;
 	font-size: 18px;
 	font-weight: 300;
 	text-align: center;
+}
+
+.app_button_1:disabled {
+	opacity: 0.5;
+	cursor:progress;
 }
 
 /* faq section | right side */
@@ -272,3 +278,61 @@ body {
     margin-right: 15px;
     font-size: 14px; /* Reduced font size */
 }
+
+/* chat | flashing loading dots */
+/* ---------------------------------------------------------------------- */
+ .dot-flashing {
+	position: relative;
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	background-color: #383838;
+	color: #383838;
+	animation: dot-flashing 1s infinite linear alternate;
+	animation-delay: 0.5s;
+  }
+  .dot-flashing::before, .dot-flashing::after {
+	content: "";
+	display: inline-block;
+	position: absolute;
+	top: 0;
+  }
+  .dot-flashing::before {
+	left: -15px;
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	background-color: #383838;
+	color: #383838;
+	animation: dot-flashing 1s infinite alternate;
+	animation-delay: 0s;
+  }
+  .dot-flashing::after {
+	left: 15px;
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	background-color: #383838;
+	color: #383838;
+	animation: dot-flashing 1s infinite alternate;
+	animation-delay: 1s;
+  }
+  
+  @keyframes dot-flashing {
+	0% {
+	  background-color: #383838;
+	}
+	50%, 100% {
+	  background-color: rgba(152, 128, 255, 0.2);
+	}
+  }
+
+  .stage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 5px 0;
+    margin: 0 -5%;
+    overflow: hidden;
+  }

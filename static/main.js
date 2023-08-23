@@ -6,6 +6,47 @@
 }
 
 /**
+ * Renders a placeholder message on the chat screen whilst awaiting a response.
+ */
+
+function renderPlaceholderMessageToScreen(args) {
+    // local variables
+    let displayDate = (args.time || getCurrentTimestamp()).toLocaleString('en-IN', {
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+    });
+    let messagesContainer = $('.messages');
+
+    // init element
+    let message = $(`
+    <li id="placeholder_message" class="message ${args.message_side}">
+        <div class="avatar"></div>
+        <div class="text_wrapper">
+            <div class="text">
+                <div class="snippet" data-title="dot-flashing">
+                    <div class="stage">
+                        <div class="dot-flashing"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="timestamp">${displayDate}</div>
+        </div>
+    </li>
+    `);
+
+    // add to parent
+    messagesContainer.append(message);
+
+    // animations
+    setTimeout(function () {
+        message.addClass('appeared');
+    }, 0);
+    messagesContainer.animate({ scrollTop: messagesContainer.prop('scrollHeight') }, 300);
+}
+
+/**
  * Renders a message on the chat screen based on the given arguments.
  * This is called from the `showUserMessage` and `showBotMessage`.
  */
@@ -100,6 +141,17 @@ function showUserMessage(message, datetime) {
 }
 
 /**
+ * Displays the chatbot placeholder message on the chat screen. This is the left side message.
+ */
+function showPlaceholderBotMessage() {
+    renderPlaceholderMessageToScreen({message_side: 'left'});
+}
+
+function removePlaceholderBotMessage() {
+    $('#placeholder_message').remove();
+}
+
+/**
  * Get input from user and show it on screen on button click.
  */
 /**
@@ -118,6 +170,14 @@ $('#msg_input').keypress(function (e) {
  */
 $('#send_button').on('click', function (e) {
     var userMsg = $('#msg_input').val();
+    
+    // Do not allow sending of blank messages
+    if (!userMsg) {
+        return;
+    }
+
+    // Disable send button 
+    $('#send_button').prop('disabled', true);
 
     // Collect all checked namespaces.
     var namespaces = [];
@@ -128,10 +188,13 @@ $('#send_button').on('click', function (e) {
     // print (selectedChatMode)
     // get and show message and reset input
     showUserMessage(userMsg);
-    $('#msg_input').val('');
+    $('#msg_input').prop('disabled', true)
 
     // show loading spinner
-    $('#loading_spinner').show();
+    //$('#loading_spinner').show();
+
+    // Show placeholder message
+    showPlaceholderBotMessage();
 
     // get response from server
     // get response from server
@@ -144,7 +207,15 @@ $('#send_button').on('click', function (e) {
         },
         success: function(data) {
             // hide loading spinner
-            $('#loading_spinner').hide();
+            //$('#loading_spinner').hide();
+
+            // remove placeholder message
+            removePlaceholderBotMessage()
+
+            // enable send button and enable and clear input
+            $('#send_button').prop('disabled', false);
+            $('#msg_input').prop('disabled', false)
+            $('#msg_input').val('');
 
             // parse JSON response and extract message(s) by key
             for (var key in data) {
@@ -161,7 +232,13 @@ $('#send_button').on('click', function (e) {
         },
         error: function() {
             // hide loading spinner
-            $('#loading_spinner').hide();
+            //$('#loading_spinner').hide();
+
+            // remove placeholder message
+            removePlaceholderBotMessage()
+
+            // enable send button
+            $('#send_button').prop('disabled', false);
 
             setTimeout(function () {
                 showBotMessage('Sorry, I am currently unable to provide a response.');
