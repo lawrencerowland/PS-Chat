@@ -15,6 +15,9 @@ Put your documents into ``` ./docs/[cat_name]/ ``` for separate folders. The nam
 Create a  ```questions.txt``` file for each category of documents and put each question on a new line. Put your example questions in the ``` ./docs/[cat_name]/ ``` folder containing the relevent documents for that set of questions.
 
 # Set your environment file as .env in the main folder
+
+[See below regarding where to find your neo4j, OpenAI and Pinecone keys](#find-your-api-keys).
+
 ```
 # Graph Database for Chatbot talk to documents
 NEO4J_URL="xxxxx"
@@ -42,8 +45,17 @@ PINECONE_GRAPH_NAMESPACE = "my-graph"
 
 ```
 
-# Step 3. Ingest your data
-Use ``` ingest_data.py ``` upload the embeddings of your PDF documents and graph database to the cloud vector database. You can comment or uncomment partial of the code. 
+# Find your API keys
+
+- Visit [OpenAI](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key) to retrieve API keys and insert into your .env file.
+- Visit [Pinecone](https://docs.pinecone.io/docs/quickstart#2-get-and-verify-your-pinecone-api-key) to create and retrieve your API keys, and also retrieve your environment and index name from the dashboard.
+- Visit [neo4j](https://neo4j.com/docs/browser-manual/current/operations/dbms-connection/) to retrieve URL
+
+
+# Ingest your data
+This could take a while if you have multiple documents. This function will upload the embeddings of your PDF documents and graph database to the cloud vector database.
+You can uncomment the graph ingesting if you only want to upload a new pdf.
+
 ```
 python ingest_data.py
 ```
