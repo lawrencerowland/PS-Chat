@@ -176,8 +176,9 @@ $('#send_button').on('click', function (e) {
         return;
     }
 
-    // Disable send button 
+    // Disable send button and clear input
     $('#send_button').prop('disabled', true);
+    $('#msg_input').val('');
 
     // Collect all checked namespaces.
     var namespaces = [];
@@ -209,14 +210,6 @@ $('#send_button').on('click', function (e) {
             // hide loading spinner
             //$('#loading_spinner').hide();
 
-            // remove placeholder message
-            removePlaceholderBotMessage()
-
-            // enable send button and enable and clear input
-            $('#send_button').prop('disabled', false);
-            $('#msg_input').prop('disabled', false)
-            $('#msg_input').val('');
-
             // parse JSON response and extract message(s) by key
             for (var key in data) {
                 if (data.hasOwnProperty(key)) {
@@ -234,15 +227,17 @@ $('#send_button').on('click', function (e) {
             // hide loading spinner
             //$('#loading_spinner').hide();
 
-            // remove placeholder message
-            removePlaceholderBotMessage()
-
-            // enable send button
-            $('#send_button').prop('disabled', false);
-
             setTimeout(function () {
                 showBotMessage('Sorry, I am currently unable to provide a response.');
             }, 500);
+        },
+        complete: function() {
+            // remove placeholder message
+            removePlaceholderBotMessage()
+
+            // enable send button and input
+            $('#send_button').prop('disabled', false);
+            $('#msg_input').prop('disabled', false)
         }
     });
 });
