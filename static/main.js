@@ -275,3 +275,11 @@ function randomstring(length = 20) {
 $(window).on('load', function () {
 	showBotMessage('Hi, there! I am a Chatbot specialised in project management');
 });
+
+/**
+ * Set input as question on question click.
+ */
+function handleQuestionClick(e) {
+    const question = e.target.textContent;
+    $('#msg_input').val(question);
+}

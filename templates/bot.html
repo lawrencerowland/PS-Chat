@@ -205,20 +205,21 @@
 
 	<script>
 		var questions = JSON.parse('{{ questions | safe }}');
-		console.log(questions)
 		var i = 0;
 	
 		var bigPanel = $('<div/>', { 'class': 'panel panel-default' });
 		var bigPanelHeading = $('<div/>', { 'class': 'panel-heading' });
 		var bigPanelTitle = $('<h4/>', { 'class': 'panel-title' });
 		var bigPanelLink = $('<a/>', { 'class': 'accordion-toggle', 'data-toggle': 'collapse', 'data-parent': '#accordion', 'href': '#internal_collapse_custom' + i, 'text': 'Example Questions' });
-	
+		const bigPanelInstruction = $('<p/>', { 'text': 'Click on a question to add it to the chat input' });
+
 		bigPanelLink.appendTo(bigPanelTitle);
 		bigPanelTitle.appendTo(bigPanelHeading);
 		bigPanelHeading.appendTo(bigPanel);
 	
 		var bigPanelCollapse = $('<div/>', { 'id': 'internal_collapse_custom' + i, 'class': 'panel-collapse collapse' });
 		var bigPanelBody = $('<div/>', { 'class': 'panel-body', 'id': 'documents-accordion-custom' });
+		bigPanelBody.append(bigPanelInstruction)
 	
 		i++;
 	
@@ -231,8 +232,10 @@
 			var panelBody = $('<div/>', { 'class': 'panel-body' });
 			var ol = $('<ol/>', { 'class': 'question-list' });
 	
-			questions[title].forEach(function (q) {
-				ol.append($('<li/>', { 'text': q }));
+			questions[title].forEach(function (q, index) {
+				const li = ($(`<li/>`, { 'class': 'example-question', 'id': `${title}-${index}`, 'text': q}));
+				li.click(handleQuestionClick);
+				ol.append(li);
 			});
 	
 			panelBody.append(ol);
