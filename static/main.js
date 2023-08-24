@@ -21,7 +21,16 @@ function renderPlaceholderMessageToScreen(args) {
 
     // init element
     let message = $(`
-    <li id="placeholder_message" class="message ${args.message_side}">
+    <li class="placeholder-message message ${args.message_side}">
+        <div class="avatar"></div>
+        <div class="text_wrapper">
+            <div class="text">
+                Thanks for your question! Please note that this is a prototype and responses can take around 15 - 20 seconds to arrive.
+            </div>
+            <div class="timestamp">${displayDate}</div>
+        </div>
+    </li>
+    <li class="placeholder-message message ${args.message_side}">
         <div class="avatar"></div>
         <div class="text_wrapper">
             <div class="text">
@@ -148,7 +157,7 @@ function showPlaceholderBotMessage() {
 }
 
 function removePlaceholderBotMessage() {
-    $('#placeholder_message').remove();
+    $('.placeholder-message').remove();
 }
 
 /**
