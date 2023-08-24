@@ -66,12 +66,39 @@
 				<div class="chat_window">
 
 					<div class="top_menu">
-						<div class="title">Help</div>
+						<div class="title">Help & Options</div>
 					</div>
 
-					<!-- help container -->
+					<!-- General help container -->
 					<div class="panel-group" id="accordion">					
-					
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">How to Use This Prototype</h4>
+							</div>
+							<div class="panel-body">
+								<div>
+									<h5><strong>Getting Started</strong></h5>
+									<p>Some text about the prototype and how to use it.</p>
+								</div>
+								<div>
+									<h5><strong>Chat Mode</strong></h5>
+									<p>Some text about Chat Mode and how to use it.</p>
+								</div>		
+								<div>
+									<h5><strong>Source Selections</strong></h5>
+									<p>Some text about Source Selections.</p>
+								</div>
+								<div>
+									<h5><strong>Documents Display</strong></h5>
+									<p>Some text about the Documents Display.</p>
+								</div>	
+								<div>
+									<h5><strong>Example Questions</strong></h5>
+									<p>Some text about Example Questions.</p>
+								</div>					
+
+							</div>
+						</div>
 
 
 					<!-- Chat Mode -->
@@ -124,6 +151,10 @@
 						</div>
 						<div id="internal_collapse0" class="panel-collapse collapse">
 							<div class="panel-body">
+								<div>
+									<h5>The following document collections are available to chat with:</h5>
+								</div>
+								
 								<!-- Here is where you generate the panels for each directory -->
 								<div id="documents-accordion">
 									{% for key, value in files.items() recursive %}
