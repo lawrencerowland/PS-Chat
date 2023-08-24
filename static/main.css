@@ -287,6 +287,10 @@ body {
 	font-weight: bold;
 }
 
+#documents-accordion li {
+	word-wrap: break-word;
+}
+
 /* chat | flashing loading dots */
 /* ---------------------------------------------------------------------- */
  .dot-flashing {
