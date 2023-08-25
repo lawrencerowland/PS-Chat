@@ -20,7 +20,9 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300|Open+Sans:300|Oxygen|Material+Icons"
 		rel="stylesheet">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"> -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 
 	<!-- custom css -->
 	<link rel="stylesheet" type="text/css" href="static/main.css">
@@ -142,35 +144,29 @@
 						</div>
 					</div>
 
+
 					<!-- Internal Documents -->
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h4 class="panel-title">
-								<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#internal_collapse0">Documents Display</a>
-							</h4>
-						</div>
-						<div id="internal_collapse0" class="panel-collapse collapse">
-							<div class="panel-body">
-								<div>
-									<p>The following document collections are available to chat with.</p>
-									<p>(Expand a collection to see the available documents)</p>
-								</div>
-								
-								<!-- Here is where you generate the panels for each directory -->
-								<div id="documents-accordion">
-									{% for key, value in files.items() recursive %}
+					<div class="accordion" id="documents-accordion">
+						<div class="accordion-item">
+							<h3 class="accordion-header">
+								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDocuments" aria-expanded="true" aria-controls="collapseDocuments">
+									Documents Display
+								</button>
+							</h3>
+							<div id="collapseDocuments" class="accordion-collapse collapse show" data-bs-parent="#documents-accordion">
+								<div class="accordion-body">
+									<div class="accordion">
+										{% for key, value in files.items() recursive %}
 										{% if value is mapping %}
 											<!-- This is a directory -->
-											<div class="panel panel-default">
-												<div class="panel-heading">
-													<h4 class="panel-title">
-														<a class="accordion-toggle" data-toggle="collapse" data-parent="#documents-accordion" href="#doc_collapse{{ loop.index }}">
-															{{ key }}
-														</a>
-													</h4>
-												</div>
-												<div id="doc_collapse{{ loop.index }}" class="panel-collapse collapse">
-													<div class="panel-body">
+											<div class="accordion-item" id="{{ key + '-documents-accordion' }}">
+												<h4 class="accordion-header">
+													<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{ 'collapse-' + key + '-documents-accordion' }}" aria-expanded="true" aria-controls="collapseOne">
+														{{ key }}
+													</button>
+												</h2>
+												<div id="{{ 'collapse-' + key + '-documents-accordion' }}" class="accordion-collapse collapse show" data-bs-parent="{{ key + '-documents-accordion' }}">
+													<div class="accordion-body">
 														<ul>
 															<!-- Call the loop function again to generate nested structures -->
 															{{ loop(value.items()) }}
@@ -183,13 +179,27 @@
 											<li>{{ key }}</li>
 										{% endif %}
 									{% endfor %}
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					
-					
 
+					<!-- Example Questions -->
+					<div class="accordion" id="questions-accordion">
+						<div class="accordion-item">
+							<h3 class="accordion-header">
+								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseQuestions" aria-expanded="true" aria-controls="collapseQuestions">
+									Example Questions
+								</button>
+							</h3>
+							<div id="collapseQuestions" class="accordion-collapse collapse show" data-bs-parent="#questions-accordion">
+								<div class="accordion-body" id="questions-accordion-body">
+									
+								</div>
+							</div>
+						</div>
+					</div>
 			</div>
 
 		</div>
@@ -207,52 +217,44 @@
 	<script>
 		var questions = JSON.parse('{{ questions | safe }}');
 		var i = 0;
-	
-		var bigPanel = $('<div/>', { 'class': 'panel panel-default' });
-		var bigPanelHeading = $('<div/>', { 'class': 'panel-heading' });
-		var bigPanelTitle = $('<h4/>', { 'class': 'panel-title' });
-		var bigPanelLink = $('<a/>', { 'class': 'accordion-toggle', 'data-toggle': 'collapse', 'data-parent': '#accordion', 'href': '#internal_collapse_custom' + i, 'text': 'Example Questions' });
-		const bigPanelInstruction = $('<p/>', { 'text': 'Click on a question to add it to the chat input' });
 
-		bigPanelLink.appendTo(bigPanelTitle);
-		bigPanelTitle.appendTo(bigPanelHeading);
-		bigPanelHeading.appendTo(bigPanel);
+		const questionsAccordionBody = $('#questions-accordion-body');
 	
-		var bigPanelCollapse = $('<div/>', { 'id': 'internal_collapse_custom' + i, 'class': 'panel-collapse collapse' });
-		var bigPanelBody = $('<div/>', { 'class': 'panel-body', 'id': 'documents-accordion-custom' });
-		bigPanelBody.append(bigPanelInstruction)
+		const questionsInstruction = $('<p/>', { 'text': 'Click on a question to add it to the chat input' });
+		questionsAccordionBody.append(questionsInstruction)
 	
 		i++;
+		let j = 0;
+		for (const title in questions) {
 	
-		for (var title in questions) {
-			var panel = $('<div/>', { 'class': 'panel panel-default' });
-			var panelHeading = $('<div/>', { 'class': 'panel-heading' });
-			var panelTitle = $('<h4/>', { 'class': 'panel-title' });
-			var link = $('<a/>', { 'class': 'accordion-toggle', 'data-toggle': 'collapse', 'data-parent': '#documents-accordion-custom', 'href': '#doc_collapse_custom' + i, 'text': title });
-			var collapseDiv = $('<div/>', { 'id': 'doc_collapse_custom' + i, 'class': 'panel-collapse collapse' });
-			var panelBody = $('<div/>', { 'class': 'panel-body' });
-			var ol = $('<ol/>', { 'class': 'question-list' });
-	
+			const accordion = $('<div/>', { 'class': 'accordion', 'id': 'test' })
+			const accordionItem = $('<div/>', { 'class': 'accordion-item' });
+			const accordionHeader = $('<h3/>', { 'class': 'accordion-header' });
+			const button = $('<button/>', { 'class': 'accordion-button', 'text': `${title}`, 'type': 'button', 'data-bs-toggle': "collapse", 'data-bs-target': `#collapse-${j}-questions-accordion`, 'aria-expanded': 'true', 'aria-controls': `#collapse-${j}-questions-accordion` });
+			const collapseDiv = $('<div/>', { 'class': 'accordion-collapse collapse', 'id': `collapse-${j}-questions-accordion`,'data-bs-parent': '#questions-accordion-body' });
+			const accordionBody = $('<div/>', { 'class': 'accordion-body' });
+			const ol = $('<ol/>', { 'class': 'question-list' });
+
+			accordion.append(accordionItem)
+			accordionItem.append(accordionHeader);
+			accordionHeader.append(button);
+			accordionItem.append(collapseDiv);
+			collapseDiv.append(accordionBody);
+			accordionBody.append(ol);
+
 			questions[title].forEach(function (q, index) {
 				const li = ($(`<li/>`, { 'class': 'example-question', 'id': `${title}-${index}`, 'text': q}));
 				li.click(handleQuestionClick);
 				ol.append(li);
 			});
 	
-			panelBody.append(ol);
-			collapseDiv.append(panelBody);
-			link.appendTo(panelTitle);
-			panelTitle.appendTo(panelHeading);
-			panelHeading.appendTo(panel);
-			collapseDiv.appendTo(panel);
-			panel.appendTo(bigPanelBody);
+			questionsAccordionBody.append(accordion);
 	
 			i++;
+			j++
 		}
-	
-		bigPanelBody.appendTo(bigPanelCollapse);
-		bigPanelCollapse.appendTo(bigPanel);
-		bigPanel.appendTo('#accordion');
+
+
 	</script>
 	
 
