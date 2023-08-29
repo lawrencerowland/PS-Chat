@@ -31,6 +31,20 @@
 
 <body>
 
+	<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasHelp" aria-labelledby="offcanvasHelpLabel">
+		<div class="offcanvas-header">
+			<h4 class="offcanvas-title" id="offcanvasHelpLabel">Help</h4>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		</div>
+		<div class="offcanvas-body">
+			<div class="help-section">
+				<h5>Getting Started</h5>
+				<p>To chat with your project documents you must have a Chat Mode and and least one Source Selection selected. You can then chat with your documents by typing into the chat input and pressing the Send button.</p>
+				<p>Please note that this is a prototype and response times are typically around <strong>15 to 20 seconds</strong>.</p>
+			</div>		
+		</div>
+	</div>
+
 	<div class="container">
 
 		<div class="row padded_row">
@@ -71,16 +85,11 @@
 						<h2 class="title" >Help & Options</h2>
 					</div>
 
-					<!-- General help container -->
-					<div class="panel-group" id="accordion">					
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h3 class="panel-title">Help</h3>
-							</div>
-							<div class="panel-body">				
-								<p>Need help?</p>
-								<button type="button" class="btn btn-primary">Show Help</button>
-							</div>
+					<div class="panel-group" id="accordion">
+						
+						<!-- General help container -->
+						<div class="help-panel">
+								<button type="button" class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasHelp" aria-controls="offcanvasHelp">Show Help</button>	
 						</div>
 
 
