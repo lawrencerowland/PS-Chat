@@ -283,3 +283,9 @@ function handleQuestionClick(e) {
     const question = e.target.textContent;
     $('#msg_input').val(question);
 }
+
+/**
+ * Enable tooltips
+ */
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))

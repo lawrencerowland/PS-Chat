@@ -188,8 +188,34 @@ body {
 /* faq section | right side */
 /* ---------------------------------------------------------------------- */
 
+.panel {
+	border: 1px solid lightgray;
+	border-radius: 5px;
+}
+
+.panel-body {
+	background-color: #ffffff;
+	padding: 15px;
+	border-radius: 5px;
+}
+
 .panel-group {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 	margin: 20px;
+}
+
+.panel-heading {
+	display: flex;
+	justify-content: space-between;
+	padding: 20px 16px;
+	border-radius: 5px 5px 0px 0px;
+}
+
+.panel-heading h3 {
+	font-size: 16px;
+	margin-bottom: 0px;
 }
 
 .panel-heading [data-toggle='collapse']:after {
@@ -213,6 +239,10 @@ body {
 	-ms-transform: rotate(90deg);
 	-o-transform: rotate(90deg);
 	transform: rotate(90deg);
+}
+
+.help-image {
+	height: 20px;
 }
 
 #loading_spinner {
@@ -348,3 +378,4 @@ body {
     margin: 0 -5%;
     overflow: hidden;
   }
+

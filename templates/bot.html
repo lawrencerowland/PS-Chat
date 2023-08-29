@@ -41,7 +41,7 @@
 				<div class="chat_window">
 
 					<div class="top_menu">
-						<div class="title">Chat</div>
+						<h2 class="title">Chat</h2>
 					</div>
 
 					<!-- dynamically rendered -->
@@ -68,37 +68,18 @@
 				<div class="chat_window">
 
 					<div class="top_menu">
-						<div class="title">Help & Options</div>
+						<h2 class="title" >Help & Options</h2>
 					</div>
 
 					<!-- General help container -->
 					<div class="panel-group" id="accordion">					
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<h4 class="panel-title">How to Use This Prototype</h4>
+								<h3 class="panel-title">Help</h3>
 							</div>
-							<div class="panel-body">
-								<div>
-									<h5><strong>Getting Started</strong></h5>
-									<p>Some text about the prototype and how to use it.</p>
-								</div>
-								<div>
-									<h5><strong>Chat Mode</strong></h5>
-									<p>Some text about Chat Mode and how to use it.</p>
-								</div>		
-								<div>
-									<h5><strong>Source Selections</strong></h5>
-									<p>Some text about Source Selections.</p>
-								</div>
-								<div>
-									<h5><strong>Documents Display</strong></h5>
-									<p>Some text about the Documents Display.</p>
-								</div>	
-								<div>
-									<h5><strong>Example Questions</strong></h5>
-									<p>Some text about Example Questions.</p>
-								</div>					
-
+							<div class="panel-body">				
+								<p>Need help?</p>
+								<button type="button" class="btn btn-primary">Show Help</button>
 							</div>
 						</div>
 
@@ -106,7 +87,8 @@
 					<!-- Chat Mode -->
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h4 class="panel-title">Chat Mode</h4> <!-- Title changed to Chat Mode -->
+							<h3 class="panel-title">Chat Mode</h3> <!-- Title changed to Chat Mode -->
+							<a href="#" data-bs-toggle="tooltip" data-bs-title="Chat mode allows you to switch between the different modes of talking to your documents"><img class= "help-image" src="../static/img/question-mark.png" alt="Question mark"></a>
 						</div>
 						<div class="panel-body">
 							<div class="form-check">
@@ -122,11 +104,11 @@
 					<!-- Namespace checkboxes -->
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h4 class="panel-title">
-								<a class="accordion-toggle" data-parent="#accordion" href="#namespace_collapse">Source Selections</a>
-							</h4>
+							<h3 class="panel-title">
+								Source Selections
+							</h3>
+							<a href="#" data-bs-toggle="tooltip" data-bs-title="Select the collections of documents you would like to chat with"><img class= "help-image" src="../static/img/question-mark.png" alt="Question mark"></a>
 						</div>
-						<div id="namespace_collapse" class="panel-collapse">
 							<div class="panel-body">
 								<p>Which documents would you like to chat with? Please tick at least one box:</p>  <!-- Added text -->
 								{% for namespace in namespaces %}
@@ -141,7 +123,6 @@
 								</div>
 								{% endfor %}
 							</div>
-						</div>
 					</div>
 
 
@@ -149,23 +130,25 @@
 					<div class="accordion" id="documents-accordion">
 						<div class="accordion-item">
 							<h3 class="accordion-header">
-								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDocuments" aria-expanded="true" aria-controls="collapseDocuments">
+								<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDocuments" aria-expanded="false" aria-controls="collapseDocuments">
 									Documents Display
 								</button>
 							</h3>
-							<div id="collapseDocuments" class="accordion-collapse collapse show" data-bs-parent="#documents-accordion">
+							<div id="collapseDocuments" class="accordion-collapse collapse" data-bs-parent="#documents-accordion">
+						
 								<div class="accordion-body">
+									<p>Document collections available to chat with:</p>
 									<div class="accordion">
 										{% for key, value in files.items() recursive %}
 										{% if value is mapping %}
 											<!-- This is a directory -->
 											<div class="accordion-item" id="{{ key + '-documents-accordion' }}">
 												<h4 class="accordion-header">
-													<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{ 'collapse-' + key + '-documents-accordion' }}" aria-expanded="true" aria-controls="collapseOne">
+													<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{ 'collapse-' + key + '-documents-accordion' }}" aria-expanded="false" aria-controls="#{{ 'collapse-' + key + '-documents-accordion' }}">
 														{{ key }}
 													</button>
 												</h2>
-												<div id="{{ 'collapse-' + key + '-documents-accordion' }}" class="accordion-collapse collapse show" data-bs-parent="{{ key + '-documents-accordion' }}">
+												<div id="{{ 'collapse-' + key + '-documents-accordion' }}" class="accordion-collapse collapse" data-bs-parent="{{ key + '-documents-accordion' }}">
 													<div class="accordion-body">
 														<ul>
 															<!-- Call the loop function again to generate nested structures -->
@@ -189,13 +172,13 @@
 					<div class="accordion" id="questions-accordion">
 						<div class="accordion-item">
 							<h3 class="accordion-header">
-								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseQuestions" aria-expanded="true" aria-controls="collapseQuestions">
+								<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseQuestions" aria-expanded="true" aria-controls="collapseQuestions">
 									Example Questions
 								</button>
 							</h3>
-							<div id="collapseQuestions" class="accordion-collapse collapse show" data-bs-parent="#questions-accordion">
+							<div id="collapseQuestions" class="accordion-collapse collapse" data-bs-parent="#questions-accordion">
 								<div class="accordion-body" id="questions-accordion-body">
-									
+									<!-- Generated questions go here -->
 								</div>
 							</div>
 						</div>
@@ -208,8 +191,6 @@
 
 	<!-- vendor script files -->
 	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js">
-	</script>
 
 	<!-- custom scripts -->
 	<script src="static/main.js"></script>
@@ -230,7 +211,7 @@
 			const accordion = $('<div/>', { 'class': 'accordion', 'id': 'test' })
 			const accordionItem = $('<div/>', { 'class': 'accordion-item' });
 			const accordionHeader = $('<h3/>', { 'class': 'accordion-header' });
-			const button = $('<button/>', { 'class': 'accordion-button', 'text': `${title}`, 'type': 'button', 'data-bs-toggle': "collapse", 'data-bs-target': `#collapse-${j}-questions-accordion`, 'aria-expanded': 'true', 'aria-controls': `#collapse-${j}-questions-accordion` });
+			const button = $('<button/>', { 'class': 'accordion-button collapsed', 'text': `${title}`, 'type': 'button', 'data-bs-toggle': "collapse", 'data-bs-target': `#collapse-${j}-questions-accordion`, 'aria-expanded': 'true', 'aria-controls': `#collapse-${j}-questions-accordion` });
 			const collapseDiv = $('<div/>', { 'class': 'accordion-collapse collapse', 'id': `collapse-${j}-questions-accordion`,'data-bs-parent': '#questions-accordion-body' });
 			const accordionBody = $('<div/>', { 'class': 'accordion-body' });
 			const ol = $('<ol/>', { 'class': 'question-list' });
