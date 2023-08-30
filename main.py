@@ -63,7 +63,6 @@ def home():
     Example_Questions = get_questions(directory_path)
     return render_template('bot.html', files=files, namespaces=namespaces, questions=json.dumps(Example_Questions))
 
-
 @app.route('/get', methods=['POST'])
 def get_bot_response():
     question = request.form.get('msg')
