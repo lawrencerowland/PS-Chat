@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, jsonify, Response
 # from utils.graph_qurey import QueryGraph
 from utils.talk2graphs import QueryGraph
-from utils.talk2pdf import QueryDocs
+# from utils.talk2pdf import QueryDocs
+from utils.talk2pdf_llm import QueryDocs
 import time
 import json
 from threading import Thread
