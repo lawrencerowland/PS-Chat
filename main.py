@@ -63,6 +63,24 @@ def home():
     Example_Questions = get_questions(directory_path)
     return render_template('bot.html', files=files, namespaces=namespaces, questions=json.dumps(Example_Questions))
 
+@app.route('/oedt')
+def get_oedt():
+    directory_path = './docs/oedt'
+    files = get_files(directory_path)
+    namespaces = get_namespaces(directory_path)
+    Example_Questions = get_questions(directory_path)
+    return render_template('bot.html', files=files, namespaces=namespaces, questions=json.dumps(Example_Questions))
+
+@app.route('/risk-variance')
+def get_risk_variance():
+    directory_path = './docs/risk-variance'
+    files = get_files(directory_path)
+    namespaces = get_namespaces(directory_path)
+    Example_Questions = get_questions(directory_path)
+    return render_template('bot.html', files=files, namespaces=namespaces, questions=json.dumps(Example_Questions))
+
+
+
 @app.route('/get', methods=['POST'])
 def get_bot_response():
     question = request.form.get('msg')
