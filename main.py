@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import os
 import ast
 
+
 load_dotenv()
 neo4j_url = os.getenv('NEO4J_URL')
 neo4j_user = os.getenv('NEO4J_USER')
@@ -57,29 +58,23 @@ def get_questions(directory):
 
 @app.route('/')
 def home():
+    ## If there are docs in the docs folder, use those to populate Source Selection, Document Display and Example Questions
     directory_path = './docs'
     files = get_files(directory_path)
     namespaces = get_namespaces(directory_path)
-    Example_Questions = get_questions(directory_path)
-    return render_template('bot.html', files=files, namespaces=namespaces, questions=json.dumps(Example_Questions))
+    questions = get_questions(directory_path)
 
-@app.route('/oedt')
-def get_oedt():
-    directory_path = './docs/oedt'
-    files = get_files(directory_path)
-    namespaces = get_namespaces(directory_path)
-    Example_Questions = get_questions(directory_path)
-    return render_template('bot.html', files=files, namespaces=namespaces, questions=json.dumps(Example_Questions))
+    # If not, use the pre-generated data/client_doc_structure.json file
+    if not files:
+        with open('./data/client_doc_structure.json') as json_file:
+            file_contents = json_file.read()
 
-@app.route('/risk-variance')
-def get_risk_variance():
-    directory_path = './docs/risk-variance'
-    files = get_files(directory_path)
-    namespaces = get_namespaces(directory_path)
-    Example_Questions = get_questions(directory_path)
-    return render_template('bot.html', files=files, namespaces=namespaces, questions=json.dumps(Example_Questions))
+        data = json.loads(file_contents)
+        files = data['files']
+        namespaces = data['namespaces']
+        questions = data['questions']
 
-
+    return render_template('bot.html', files=files, namespaces=namespaces, questions=json.dumps(questions))
 
 @app.route('/get', methods=['POST'])
 def get_bot_response():

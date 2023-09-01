@@ -160,16 +160,17 @@
 								<div class="accordion-body">
 									<p>Document collections available to chat with:</p>
 									<div class="accordion">
+										{% set indexCount = 0 %}
 										{% for key, value in files.items() recursive %}
 										{% if value is mapping %}
 											<!-- This is a directory -->
-											<div class="accordion-item" id="{{ key + '-documents-accordion' }}">
+											<div class="accordion-item" id="{{ indexCount|string + '-documents-accordion' }}">
 												<h4 class="accordion-header">
-													<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{ 'collapse-' + key + '-documents-accordion' }}" aria-expanded="false" aria-controls="#{{ 'collapse-' + key + '-documents-accordion' }}">
+													<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{ 'collapse-d' + indexCount|string + '-documents-accordion' }}" aria-expanded="false" aria-controls="#{{ 'collapse-d' + indexCount|string + '-documents-accordion' }}">
 														{{ key }}
 													</button>
 												</h2>
-												<div id="{{ 'collapse-' + key + '-documents-accordion' }}" class="accordion-collapse collapse" data-bs-parent="{{ key + '-documents-accordion' }}">
+												<div id="{{ 'collapse-d' + indexCount|string + '-documents-accordion' }}" class="accordion-collapse collapse" data-bs-parent="{{ 'd' + key + '-documents-accordion' }}">
 													<div class="accordion-body">
 														<ul>
 															<!-- Call the loop function again to generate nested structures -->
@@ -182,6 +183,7 @@
 											<!-- This is a file -->
 											<li>{{ key }}</li>
 										{% endif %}
+										{% set indexCount = indexCount + 1 %}
 									{% endfor %}
 									</div>
 								</div>
@@ -232,8 +234,8 @@
 			const accordion = $('<div/>', { 'class': 'accordion', 'id': 'test' })
 			const accordionItem = $('<div/>', { 'class': 'accordion-item' });
 			const accordionHeader = $('<h3/>', { 'class': 'accordion-header' });
-			const button = $('<button/>', { 'class': 'accordion-button collapsed', 'text': `${title}`, 'type': 'button', 'data-bs-toggle': "collapse", 'data-bs-target': `#collapse-${j}-questions-accordion`, 'aria-expanded': 'true', 'aria-controls': `#collapse-${j}-questions-accordion` });
-			const collapseDiv = $('<div/>', { 'class': 'accordion-collapse collapse', 'id': `collapse-${j}-questions-accordion`,'data-bs-parent': '#questions-accordion-body' });
+			const button = $('<button/>', { 'class': 'accordion-button collapsed', 'text': `${title}`, 'type': 'button', 'data-bs-toggle': "collapse", 'data-bs-target': `#collapse-q${j}-questions-accordion`, 'aria-expanded': 'true', 'aria-controls': `#collapse-q${j}-questions-accordion` });
+			const collapseDiv = $('<div/>', { 'class': 'accordion-collapse collapse', 'id': `collapse-q${j}-questions-accordion`,'data-bs-parent': '#questions-accordion-body' });
 			const accordionBody = $('<div/>', { 'class': 'accordion-body' });
 			const ol = $('<ol/>', { 'class': 'question-list' });
 
