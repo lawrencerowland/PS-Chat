@@ -51,6 +51,13 @@ You can uncomment the graph ingesting if you only want to upload a new pdf.
 python ingest_data.py
 ```
 
+# Create document structure
+This function will create a client_doc_structure.json file in the ./data folder. The UI will populate the Source Selection, Document Display and Questions sections with this data. If there are files locally in the ./docs folder, these will be used instead.
+
+```
+python generate_client_doc_structure.py
+```
+
 
 # Launch your app
 After ingesting your data, simply run main.py for local deployment and debugging.
