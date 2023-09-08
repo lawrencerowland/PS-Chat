@@ -63,7 +63,7 @@ def home():
 	namespaces = []
 	questions = {}
 
-	## If there are is a docs folder, use files withing to to populate Source Selection, Document Display and Example Questions
+	## If there are is a docs folder, use files within to to populate Source Selection, Document Display and Example Questions
 	if os.path.isdir('./docs'):
 		files = get_files(pdf_doc_dir)
 		namespaces = get_namespaces(pdf_doc_dir)
