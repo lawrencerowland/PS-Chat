@@ -69,10 +69,6 @@ def home():
 		namespaces = get_namespaces(pdf_doc_dir)
 		questions = get_questions(pdf_doc_dir)
 
-		print(files)
-		print(namespaces)
-		print(questions)
-
 	# Else if there is a client_doc_structure.json file use that
 	elif os.path.isfile('./data/client_doc_structure.json'):
 		with open('./data/client_doc_structure.json') as json_file:
