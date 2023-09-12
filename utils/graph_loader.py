@@ -5,7 +5,7 @@ from langchain.vectorstores import Pinecone
 import pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
 from neo4j import GraphDatabase
-
+import itertools
 
 class ingest_graph:
     def __init__(self, namespace, neo4j_url, neo4j_user, neo4j_password,
@@ -26,7 +26,7 @@ class ingest_graph:
                         environment=pinecone_env_name  # next to api key in console
                     )
     
-    def upload_graph_to_pinecone(self, source_name="Unilever-graph"):
+    def upload_graph_to_pinecone(self, source_name="neo4j-graph"):
         embeddings = OpenAIEmbeddings()
 
         print ("Start loading graph...")
@@ -47,7 +47,7 @@ class ingest_graph:
                     "edge": record["type(r)"]
                 }
                 pairs_of_nodes.append(pair_node)
-                # print(record["labels(a)"][0], record["a.name"], record["type(r)"], record["labels(b)"][0], record["b.name"])
+                print(record["labels(a)"][0], record["a.name"], record["type(r)"], record["labels(b)"][0], record["b.name"])
             return pairs_of_nodes
         
         with driver.session() as session:
@@ -80,5 +80,17 @@ class ingest_graph:
         pinecone_vectors = []
         for idx, n_v in enumerate(node_vectors):
             pinecone_vectors.append((str(idx), n_v["value"], n_v["meta_data"]))
-        upsert_response = index.upsert(vectors=pinecone_vectors, namespace=self.namespace)
+
+        # Upload the vectors to Pinecone with batches
+        def chunks(iterable, batch_size=100):
+            """A helper function to break an iterable into chunks of size batch_size."""
+            it = iter(iterable)
+            chunk = tuple(itertools.islice(it, batch_size))
+            while chunk:
+                yield chunk
+                chunk = tuple(itertools.islice(it, batch_size))
+        for vec in chunks(pinecone_vectors, batch_size=10):
+            index.upsert(vectors=vec,namespace=self.namespace)
+
+        # upsert_response = index.upsert(vectors=pinecone_vectors, namespace=self.namespace)
         print ("Finished loading graph...")

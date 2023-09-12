@@ -62,16 +62,15 @@ class QueryGraph():
         print (response)
         return response
     
-    # Optimissed version of Cyher Query
-    def optimised_cyher(self, question, pinecone_api_key,pinecone_env_name,pinecone_index_name,
-                        my_namespace="graph", text_key="name", topK=20):
+    # Optimissed version of Cypher Query
+    def optimised_cypher(self, question, pinecone_api_key,pinecone_env_name,pinecone_index_name,
+                        my_namespace="graph", text_key="text", topK=20):
         
         pinecone.init(api_key=pinecone_api_key,environment=pinecone_env_name)
         index = pinecone.Index(pinecone_index_name)
         vectorstore = Pinecone(index, self.embeddings.embed_query, text_key, namespace=my_namespace)
-
         docs = vectorstore.similarity_search(question, k=topK)
-
+        print (docs)
         # Get the related node names, node types and edges
         related_node_names = ""
         related_node_types = ""
@@ -87,11 +86,13 @@ class QueryGraph():
                 related_edges+=d.page_content + "; "
 
         # Build additional hint
-        additional_hint = f"""I used KNN and Pinecone to find the most relevant nodes, node types and edges closed to the questions which might be helpful for you.
-                            Hint: Relevant names of nodes: {related_node_names} in the database.
-                                  Relevant labels of nodes: {related_node_types} in the database. 
-                                  Relevant edges type: {related_edges} in the database."""
-        # print (additional_hint)
+        if len(related_node_names) != 0:
+            additional_hint = f"""I used KNN and Pinecone to find the most relevant nodes, node types and edges closed to the questions which might be helpful for you.
+                                Hint: Relevant names of nodes: {related_node_names} in the database.
+                                    Relevant labels of nodes: {related_node_types} in the database. 
+                                    Relevant edges type: {related_edges} in the database."""
+            print (additional_hint)
+            question = question + additional_hint
         # Enquiry the database as graph cypher QA
         graph = Neo4jGraph(
                             url=self.neo4j_url,
@@ -99,6 +100,6 @@ class QueryGraph():
                             password=self.neo4j_password)
         
         chain = GraphCypherQAChain.from_llm(ChatOpenAI(model=self.model_version,temperature=0.5), graph=graph, verbose=True,)
-        response = chain.run(question + additional_hint)
+        response = chain.run(question)
 
         return response

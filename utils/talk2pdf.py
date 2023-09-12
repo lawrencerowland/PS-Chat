@@ -23,7 +23,7 @@ class QueryDocs():
                 pinecone_api_key=None,
                 pinecone_env_name=None,
                 pinecone_index_name=None,
-                model_version="gpt-4"):
+                model_version="gpt-3.5-turbo-16k"):
         
         self.pinecone_api_key=pinecone_api_key
         self.pinecone_env_name=pinecone_env_name

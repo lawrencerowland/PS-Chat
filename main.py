@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, jsonify, Response
 # from utils.graph_qurey import QueryGraph
 from utils.talk2graphs import QueryGraph
-# from utils.talk2pdf import QueryDocs
-from utils.talk2pdf_llm import QueryDocs
+from utils.talk2pdf import QueryDocs
+# from utils.talk2pdf_llm import QueryDocs
 import time
 import json
 from threading import Thread
@@ -21,6 +21,7 @@ pinecone_api_key = os.getenv('PINECONE_KEY')
 pinecone_env_name = os.getenv('PINECONE_ENV')
 pinecone_index_name = os.getenv('PINECONE_INDEX')
 os.environ['OPENAI_API_KEY'] = openai_key
+graph_namespace = os.getenv('PINECONE_GRAPH_NAMESPACE')
 
 app = Flask(__name__)
 
@@ -94,8 +95,11 @@ def get_bot_response():
         response = {"Answer": {}}
         
         try:
+            print (f"Start querying graph... with {graph_namespace}")
             QG = QueryGraph(neo4j_url, neo4j_user, neo4j_password, openai_key)
-            response_answer_from_graph = QG.optimised_cyher(question, pinecone_api_key,pinecone_env_name,pinecone_index_name)
+            response_answer_from_graph = QG.optimised_cypher(question,
+                                                             pinecone_api_key,pinecone_env_name,pinecone_index_name,
+                                                             graph_namespace)
         except Exception as e:
             response_answer_from_graph = "There is no asscoiated information from graph."
         
@@ -106,7 +110,9 @@ def get_bot_response():
         response = {"Answer": {}}
         try:
             QG = QueryGraph(neo4j_url, neo4j_user, neo4j_password, openai_key)
-            response_answer_from_graph = QG.optimised_cyher(question, pinecone_api_key,pinecone_env_name,pinecone_index_name)
+            response_answer_from_graph = QG.optimised_cypher(question, 
+                                                             pinecone_api_key,pinecone_env_name,pinecone_index_name,
+                                                             graph_namespace)
         except Exception as e:
             response_answer_from_graph = "There is no asscoiated information from graph."            
         
