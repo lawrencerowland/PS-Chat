@@ -67,10 +67,23 @@
 					</div>
 					
 					<!-- input -->
+					
 					<form class="bottom_wrapper">
-						<input id="msg_input" placeholder="What would you like to ask your documents?" required oninvalid="this.setCustomValidity('Enter your question here')"
-						oninput="this.setCustomValidity('')" />
-						<button id="send_button" class="btn btn-primary app_button_1">Send</button>
+						<div class="input-group">
+							<input
+								type="text"
+								id="msg_input"
+								class="form-control"
+								placeholder="What would you like to ask your documents?"
+								aria-label="Your chat message" aria-describedby="send_button"
+								required
+								oninvalid="this.setCustomValidity('Enter your question here')"
+								oninput="this.setCustomValidity('')" />
+						
+								<button id="send_button" class="btn btn-primary app_button_1">Send</button>
+						  </div>
+						
+						
 					</form>
 
 				</div>

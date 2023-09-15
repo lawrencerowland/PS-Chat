@@ -165,17 +165,17 @@ body {
 	margin-block-end: 0px;
 }
 
-.bottom_wrapper #msg_input {
+/* .bottom_wrapper #msg_input {
 	flex-grow: 1;
 	outline-width: 0;
 	padding: 12px;
 	border: 1px solid #bcbdc0;
 	border-radius: 50px;
 	margin-right: 15px;
-}
+} */
 
 .app_button_1 {
-	width: 140px;
+	/* width: 140px;
 	/* border-radius: 50px;
 	cursor: pointer;
 	padding: 12px;
