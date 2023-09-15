@@ -16,6 +16,11 @@ body {
 /* layout and common global classes */
 /* ---------------------------------------------------------------------- */
 
+.main-row {
+	width: 100%;
+	max-width: 1800px;
+}
+
 .chat_window {
 	border-radius: 10px;
 	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
@@ -44,6 +49,7 @@ body {
 	padding: 20px 10px 0 10px;
 	margin: 0;
 	height: 500px;
+	min-height: 70vh;
 	overflow: scroll;
 }
 
