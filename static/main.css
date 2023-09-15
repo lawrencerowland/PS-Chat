@@ -35,6 +35,7 @@ body {
 }
 
 .top_menu .title {
+	position: relative;
 	text-align: center;
 	color: #337ab7;
 	font-size: 20px;
@@ -50,7 +51,7 @@ body {
 	margin: 0;
 	height: 500px;
 	min-height: 70vh;
-	overflow: scroll;
+	overflow: auto;
 }
 
 .messages .message {
@@ -175,8 +176,7 @@ body {
 
 .app_button_1 {
 	width: 140px;
-	background-color: #a3d063;
-	border-radius: 50px;
+	/* border-radius: 50px;
 	cursor: pointer;
 	padding: 12px;
 	border: 0px;
@@ -184,7 +184,7 @@ body {
 	color: #fff;
 	font-size: 18px;
 	font-weight: 300;
-	text-align: center;
+	text-align: center; */
 }
 
 .app_button_1:disabled {
