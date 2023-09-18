@@ -202,7 +202,7 @@ body {
 .panel-body {
 	background-color: #ffffff;
 	padding: 15px;
-	border-radius: 5px;
+	border-radius: 0px 0px 5px 5px;
 }
 
 .panel-group {
@@ -335,7 +335,12 @@ body {
 	word-wrap: break-word;
 }
 
-/* Dark Mode */
+/* Non-Bootstrap components, Dark Mode and transitions */
+.non_bs {
+	transition: color 0.08s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+		box-shadow 0.15s ease-in-out, border-radius 0.15s ease;
+}
+
 .dark-mode {
 	background-color: #212529 !important;
 	color: #dee2e6;
