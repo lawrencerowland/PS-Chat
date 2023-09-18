@@ -3,7 +3,6 @@
 }
 
 body {
-	background-color: #edeff2;
 	font-family: 'Calibri', 'Roboto', sans-serif;
 }
 
@@ -89,7 +88,7 @@ body {
 	position: relative;
 }
 
-.messages .message .text_wrapper::after,
+/* .messages .message .text_wrapper::after,
 .messages .message .text_wrapper:before {
 	top: 18px;
 	border: solid transparent;
@@ -108,7 +107,7 @@ body {
 .messages .message .text_wrapper::before {
 	border-width: 15px;
 	margin-top: -2px;
-}
+} */
 
 /* bot message */
 
@@ -334,6 +333,15 @@ body {
 
 #documents-accordion li {
 	word-wrap: break-word;
+}
+
+/* Dark Mode */
+.dark-mode {
+	background-color: #212529 !important;
+	color: #dee2e6;
+}
+.dark-mode-border {
+	border: 1px solid #495057;
 }
 
 /* chat | flashing loading dots */

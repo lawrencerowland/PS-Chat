@@ -10,6 +10,7 @@ function getCurrentTimestamp() {
  */
 
 function renderPlaceholderMessageToScreen(args) {
+	const isDarkMode = document.querySelector('html').getAttribute('data-bs-theme') === 'dark';
 	// local variables
 	let displayDate = (args.time || getCurrentTimestamp()).toLocaleString('en-IN', {
 		month: 'short',
@@ -23,7 +24,7 @@ function renderPlaceholderMessageToScreen(args) {
 	let message = $(`
     <li class="placeholder-message message ${args.message_side}">
         <div class="avatar"></div>
-        <div class="text_wrapper">
+        <div class="text_wrapper non_bs non_bs_border ${isDarkMode && 'dark-mode dark-mode-border'}">
             <div class="text">
                 Thanks for your question! Please note that this is a prototype and responses can take around 15 - 20 seconds to arrive.
             </div>
@@ -32,7 +33,7 @@ function renderPlaceholderMessageToScreen(args) {
     </li>
     <li class="placeholder-message message ${args.message_side}">
         <div class="avatar"></div>
-        <div class="text_wrapper">
+        <div class="text_wrapper non_bs non_bs_border ${isDarkMode && 'dark-mode dark-mode-border'}">
             <div class="text">
                 <div class="snippet" data-title="dot-flashing">
                     <div class="stage">
@@ -61,6 +62,7 @@ function renderPlaceholderMessageToScreen(args) {
  */
 
 function renderMessageToScreen(args) {
+	const isDarkMode = document.querySelector('html').getAttribute('data-bs-theme') === 'dark';
 	// local variables
 	let displayDate = (args.time || getCurrentTimestamp()).toLocaleString('en-IN', {
 		month: 'short',
@@ -97,7 +99,7 @@ function renderMessageToScreen(args) {
 	let message = $(`
     <li class="message ${args.message_side}">
         <div class="avatar"></div>
-        <div class="text_wrapper">
+        <div class="text_wrapper non_bs non_bs_border ${isDarkMode && 'dark-mode dark-mode-border'}">
             <div class="text">${args.text}</div>
             ${sourceBox}
             <div class="timestamp">${displayDate}</div>
@@ -293,6 +295,12 @@ function handleDarkModeClick() {
 	currentTheme === 'light'
 		? htmlElement.setAttribute('data-bs-theme', 'dark')
 		: htmlElement.setAttribute('data-bs-theme', 'light');
+
+	const nonBootstrapElements = document.querySelectorAll('.non_bs');
+	nonBootstrapElements.forEach((element) => {
+		element.classList.toggle('dark-mode');
+		element.classList.contains('non_bs_border') && element.classList.toggle('dark-mode-border');
+	});
 }
 
 /**
