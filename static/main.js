@@ -80,7 +80,7 @@ function renderMessageToScreen(args) {
 			args.source.forEach((src, idx) => {
 				sourceBox += `
                 <button class="collapsible" id="collapsible-${idx}">Show Source ${idx + 1}</button>
-                <div class="content">
+                <div class="content non_bs non_bs_border ${isDarkMode && 'dark-mode dark-mode-border'}">
                     <p>${src}</p>
                 </div>
                 `;
@@ -88,7 +88,7 @@ function renderMessageToScreen(args) {
 		} else {
 			sourceBox = `
             <button class="collapsible">Show Source</button>
-            <div class="content">
+            <div class="content non_bs non_bs_border ${isDarkMode && 'dark-mode dark-mode-border'}">
                 <p>${args.source}</p>
             </div>
             `;
