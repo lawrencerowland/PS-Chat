@@ -101,6 +101,7 @@ function renderMessageToScreen(args) {
         <div class="avatar"></div>
         <div class="text_wrapper non_bs non_bs_border ${isDarkMode && 'dark-mode dark-mode-border'}">
             <div class="text">${args.text}</div>
+		</div>
             ${sourceBox}
             <div class="timestamp">${displayDate}</div>
         </div>
