@@ -29,7 +29,7 @@ chunk_overlap = int(os.getenv('CHUNK_OVERLAP'))
 if __name__ == "__main__":
 
     pdf_ingest = ingest_pdf(None, pinecone_api_key, pinecone_env_name, pinecone_index_name, doc_dir)
-    # pdf_ingest.delete_namespaces ("Praxis")
+    # pdf_ingest.delete_namespaces("Praxis")
     pdf_ingest.check_pinecone_index()
     pdf_ingest.upload_pdf_to_pinecone(chunk_size, chunk_overlap)
     pdf_ingest.check_pinecone_index()
