@@ -69,7 +69,7 @@ class QueryGraph():
         pinecone.init(api_key=pinecone_api_key,environment=pinecone_env_name)
         index = pinecone.Index(pinecone_index_name)
         vectorstore = Pinecone(index, self.embeddings.embed_query, text_key, namespace=my_namespace)
-        docs = vectorstore.similarity_search(question, k=topK)
+        docs = vectorstore.similarity_search_with_score(question, k=topK)
         print ("Finding associated information from graph in the pinecone index...")
         print (docs)
         print ("**************************************")
@@ -77,7 +77,8 @@ class QueryGraph():
         # Get the related node names, node types and edges
         node_names_info, node_types_info, edges_info= "", "", ""
         len_node_names, len_node_types, len_edges = 0, 0, 0
-        for d in docs:
+        for doc in docs:
+            d = doc[0]
             if d.metadata["info_type"] == "node_names":
                 len_node_names+=1
                 node_names_info += f"({len_node_names}) " + d.page_content + "; "
@@ -92,7 +93,10 @@ class QueryGraph():
 
         # Build additional hint
         if len_node_names!=0 or len_node_types!= 0 or len_edges!=0:
-            additional_hint = f"""I also used KNN and Pinecone to find the relevant nodes names, nodes labels, and edges relating to the questions, which might be helpful for you. """
+            additional_hint = f""" (I also used KNN and Pinecone to find the relevant nodes names, nodes labels, and edges relating to the questions, which might be helpful for you. 
+                                    Noted that these additional hints might be noisy and misleading. 
+                                    For example, 'AA_Optimisation' is different from 'BB_Optimisation'. 'AA Optimisation' is also different from 'BB Optimization'.
+                                    Be careful when dealing with the following hints by the guidance."""
             
             if len_node_names != 0:
                 additional_hint += f"""Hint: Relevant nodes' names: {node_names_info}. """
@@ -102,11 +106,13 @@ class QueryGraph():
 
             if len_edges != 0:
                 additional_hint += f"""Relevant edges: {edges_info}."""
-            
+
+            question = question + additional_hint + ")"
+
             print ("Using the following additional hint as")
-            print (additional_hint)
+            print (question)
             print ("**************************************")
-            question = question + additional_hint
+
         # Enquiry the database as graph cypher QA
         graph = Neo4jGraph(
                             url=self.neo4j_url,
