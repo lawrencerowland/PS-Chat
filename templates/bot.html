@@ -179,9 +179,9 @@
 								<div class="accordion-body">
 									<p>Document collections available to chat with:</p>
 									<div class="accordion">
-										{% set indexCount = 0 %}
 										{% for key, value in files.items() recursive %}
 										{% if value is mapping %}
+										{% set indexCount = loop.index %}
 											<!-- This is a directory -->
 											<div class="accordion-item" id="{{ indexCount|string + '-documents-accordion' }}">
 												<h4 class="accordion-header">
