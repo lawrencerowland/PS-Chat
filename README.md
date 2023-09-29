@@ -1,7 +1,7 @@
 # PS-Chat
 The code for delivering the ChatBot project for PS
 
-# Install the Requirements in your terminal
+# Step 0. Install the Requirements in your terminal
 
 ```
 pip install -r requirements.txt
@@ -9,60 +9,58 @@ pip install -r requirements.txt
 ```
 
 
-# Upload your own documents
-Put your documents and put them into ``` ./docs/[cat_name]/ ``` for separate folders. The names of [cat_name] will appear as tickboxes so that you can choose one or multiple sources for chatting
+# Step 1. Prepare your own documents for chatbot talk to PDF documents
+
+Put your documents into ``` ./docs/[category_name]/ ``` . Each [category_name] of subfolder will appear as tickboxes so that you can choose one or multiple categories of sources of PDF document for reference. Please create a subfolder inside the ``` ./docs ``` with careful naming [category_name], because it will be used for storing your document in cloud vector database
 
 
-# Sett your environment file as .env in the main folder
+# Step 2. Set your environment file as .env in the main folder
 ```
-# This is the options that if you want to talk to your graph
+# Graph Database for Chatbot talk to documents
 NEO4J_URL="xxxxx"
 NEO4J_USER="xxxxx"
 NEO4J_PASSWORD="xxxxx"
 
-# Your openai key
+# Your openai key 
 OPENAI_KEY="xxxxx"
 
-# The pinecone of storing the embeddings of your pdf documents
+# Setting of Vector database
 PINECONE_KEY = "xxxxx"
 PINECONE_ENV = "xxxxx"
 PINECONE_INDEX = "xxxxx"
 
-# The directory of storing your documents
+# Name of directory for storing PDF documents
 PDF_DOC_DIR = "./docs" 
 
-# Upload parameters change as you like
+# Upload parameters of PDF doucment into vector database
 CHUNK_SIZE = 1000 
 CHUNK_OVERLAP = 0
 
-# Define the namespaces for customization. (You can ignore it)
+# Namespace for vector database
 PINECONE_PDF_NAMESPACE = "my-pdf" 
 PINECONE_GRAPH_NAMESPACE = "my-graph" 
 
 ```
 
-
-# Ingest your data
-This could take a while if you have multiple documents. This function will upload the embeddings of your PDF documents and graph database to the cloud vector database.
-You can uncomment the graph ingesting if you only want to upload a new pdf.
-
+# Step 3. Ingest your data
+Use ``` ingest_data.py ``` upload the embeddings of your PDF documents and graph database to the cloud vector database. You can comment or uncomment partial of the code. 
 ```
 python ingest_data.py
 ```
 
 
-# Launch your app
+# Step 4. Launch your app
 After ingesting your data, simply run main.py for local deployment and debugging.
 
 ```
 python main.py
 ```
 
-# Deploy your app using Gunicorn
+# Option 1. Deploy your app using Gunicorn
 
 ```
 gunicorn -w 2 -b :8000 main:app --timeout=120
 ```
 
-# For port forwarding using Ngrok
+# Option 2. For port forwarding using Ngrok
 Please refer https://ngrok.com/docs/getting-started/
