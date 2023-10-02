@@ -75,11 +75,11 @@ After ingesting your data, simply run main.py for local deployment and debugging
 python main.py
 ```
 
-# Option 1. Deploy your app using Gunicorn
+## Option 1. Deploy your app using Gunicorn
 
 ```
 gunicorn -w 2 -b :8000 main:app --timeout=120
 ```
 
-# Option 2. For port forwarding using Ngrok
+## Option 2. For port forwarding using Ngrok
 Please refer https://ngrok.com/docs/getting-started/
