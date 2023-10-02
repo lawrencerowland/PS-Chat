@@ -62,43 +62,64 @@ class QueryGraph():
         print (response)
         return response
     
-    # Optimissed version of Cyher Query
-    def optimised_cyher(self, question, pinecone_api_key,pinecone_env_name,pinecone_index_name,
-                        my_namespace="graph", text_key="name", topK=20):
+    # Optimissed version of Cypher Query
+    def optimised_cypher(self, question, pinecone_api_key,pinecone_env_name,pinecone_index_name,
+                        my_namespace="graph", text_key="text", topK=20):
         
         pinecone.init(api_key=pinecone_api_key,environment=pinecone_env_name)
         index = pinecone.Index(pinecone_index_name)
         vectorstore = Pinecone(index, self.embeddings.embed_query, text_key, namespace=my_namespace)
-
-        docs = vectorstore.similarity_search(question, k=topK)
+        docs = vectorstore.similarity_search_with_score(question, k=topK)
+        print ("Finding associated information from graph in the pinecone index...")
+        print (docs)
+        print ("**************************************")
 
         # Get the related node names, node types and edges
-        related_node_names = ""
-        related_node_types = ""
-        related_edges = ""
-        for d in docs:
+        node_names_info, node_types_info, edges_info= "", "", ""
+        len_node_names, len_node_types, len_edges = 0, 0, 0
+        for doc in docs:
+            d = doc[0]
             if d.metadata["info_type"] == "node_names":
-                related_node_names+=d.page_content + "; "
+                len_node_names+=1
+                node_names_info += f"({len_node_names}) " + d.page_content + "; "
             
             if d.metadata["info_type"] == "node_types":
-                related_node_types+=d.page_content + "; "
+                len_node_types+=1
+                node_types_info += f"({len_node_types}) " + d.page_content + "; "
             
             if d.metadata["info_type"] == "edges":
-                related_edges+=d.page_content + "; "
+                len_edges+=1
+                edges_info += f"({len_edges}) " + d.page_content + "; "
 
         # Build additional hint
-        additional_hint = f"""I used KNN and Pinecone to find the most relevant nodes, node types and edges closed to the questions which might be helpful for you.
-                            Hint: Relevant names of nodes: {related_node_names} in the database.
-                                  Relevant labels of nodes: {related_node_types} in the database. 
-                                  Relevant edges type: {related_edges} in the database."""
-        # print (additional_hint)
+        if len_node_names!=0 or len_node_types!= 0 or len_edges!=0:
+            additional_hint = f""" (I also used KNN and Pinecone to find the relevant nodes names, nodes labels, and edges relating to the questions, which might be helpful for you. 
+                                    Noted that these additional hints might be noisy and misleading. 
+                                    For example, 'AA_Optimisation' is different from 'BB_Optimisation'. 'AA Optimisation' is also different from 'BB Optimization'.
+                                    Be careful when dealing with the following hints by the guidance."""
+            
+            if len_node_names != 0:
+                additional_hint += f"""Hint: Relevant nodes' names: {node_names_info}. """
+
+            if len_node_types != 0:
+                additional_hint += f"""Relevant nodes' labels: {node_types_info}. """
+
+            if len_edges != 0:
+                additional_hint += f"""Relevant edges: {edges_info}."""
+
+            question = question + additional_hint + ")"
+
+            print ("Using the following additional hint as")
+            print (question)
+            print ("**************************************")
+
         # Enquiry the database as graph cypher QA
         graph = Neo4jGraph(
                             url=self.neo4j_url,
                             username=self.neo4j_user,
                             password=self.neo4j_password)
         
-        chain = GraphCypherQAChain.from_llm(ChatOpenAI(model=self.model_version,temperature=0.5), graph=graph, verbose=True,)
-        response = chain.run(question + additional_hint)
+        chain = GraphCypherQAChain.from_llm(ChatOpenAI(model=self.model_version,temperature=0), graph=graph, verbose=True,)
+        response = chain.run(question)
 
         return response
