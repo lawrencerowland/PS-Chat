@@ -10,6 +10,9 @@ import os
 import ast
 from utils.get_doc_info import get_files, get_namespaces, get_questions
 from utils.combine_chat_history import question_with_history
+import random
+import string
+
 load_dotenv()
 neo4j_url = os.getenv('NEO4J_URL')
 neo4j_user = os.getenv('NEO4J_USER')
@@ -43,7 +46,9 @@ def get_response_from_graph(question):
         return "There is no associated information from graph."
 
 app = Flask(__name__)
-app.secret_key = '1234455666'
+characters = string.ascii_letters + string.digits + string.punctuation
+password = ''.join(random.choice(characters) for i in range(8))
+app.secret_key = password
 @app.route('/')
 def home():
     directory_path = './docs'
