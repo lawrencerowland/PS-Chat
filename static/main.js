@@ -274,7 +274,7 @@ function randomstring(length = 20) {
  * Set initial bot message to the screen for the user.
  */
 $(window).on('load', function () {
-	showBotMessage('Hi, there! I am a Chatbot trained on Praxis documents. How can I help you?');
+	showBotMessage('Hi, there! I am a Chatbot trained on project documents. How can I help you?');
 });
 
 /**
