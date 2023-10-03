@@ -27,6 +27,7 @@ pinecone_index_name = os.getenv('PINECONE_INDEX')
 
 graph_namespace = os.getenv('PINECONE_GRAPH_NAMESPACE')
 
+pdf_doc_dir = os.getenv('PDF_DOC_DIR')
 
 def get_response_from_pdf(question, pdf_namespaces):
 	QD = QueryDocs(pinecone_api_key, pinecone_env_name, pinecone_index_name)

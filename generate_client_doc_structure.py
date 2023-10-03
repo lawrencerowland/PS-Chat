@@ -1,8 +1,8 @@
 import os
 import glob
 import json
+from dotenv import load_dotenv
 
-pdf_doc_dir = os.getenv('PDF_DOC_DIR')
 
 def get_files(directory_path):
 	files = {}
@@ -36,6 +36,8 @@ def get_questions(directory):
 	return Example_Questions
 
 if __name__ == "__main__":
+	load_dotenv()
+	pdf_doc_dir = os.getenv('PDF_DOC_DIR')
 	files = get_files(pdf_doc_dir)
 	namespaces = get_namespaces(pdf_doc_dir)
 	questions = get_questions(pdf_doc_dir)
