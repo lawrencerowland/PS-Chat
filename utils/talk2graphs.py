@@ -7,6 +7,8 @@ import pinecone
 from langchain.vectorstores import Pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
 from neo4j import GraphDatabase
+from langchain.callbacks import get_openai_callback
+from utils.count_tokens import log_token_details_to_file
 
 
 def list_to_string(lst):
@@ -25,7 +27,7 @@ def list_to_string(lst):
 
 class QueryGraph():
     def __init__(self, neo4j_url=None, neo4j_user=None, neo4j_password=None, 
-                openai_key=None, model_version="gpt-4"):
+                openai_key=None, model_version="gpt-3.5-turbo-16k"):
         
         self.neo4j_url=neo4j_url
         self.neo4j_user=neo4j_user
@@ -120,6 +122,12 @@ class QueryGraph():
                             password=self.neo4j_password)
         
         chain = GraphCypherQAChain.from_llm(ChatOpenAI(model=self.model_version,temperature=0), graph=graph, verbose=True,)
-        response = chain.run(question)
+        with get_openai_callback() as cb:
+            response = chain.run(question)
+
+            # log token details
+            print(f"Prompt Tokens: {cb.prompt_tokens}")
+            print(f"Completion Tokens: {cb.completion_tokens}")
+            log_token_details_to_file(cb.prompt_tokens, cb.completion_tokens, self.model_version)
 
         return response

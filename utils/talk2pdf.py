@@ -7,6 +7,8 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chains import GraphQAChain
 from langchain.indexes.graph import NetworkxEntityGraph
 import re
+from langchain.callbacks import get_openai_callback
+from utils.count_tokens import log_token_details_to_file
 
 def get_citations(response):
     citations = []
@@ -16,7 +18,6 @@ def get_citations(response):
         citations.append (cited_text)
         idx+=1
     return citations
-
 
 class QueryDocs():
     def __init__(self,
@@ -67,9 +68,17 @@ class QueryDocs():
                     all_docs.append(doc)
 
         chain = load_qa_with_sources_chain(ChatOpenAI(model=self.model_version ,temperature=0), chain_type="stuff")
-        question = question + "Try to summarise your answer in a list. Make sure each item in a list is in as many details as possible, but does not have overlap content."
-        response = chain({"input_documents": all_docs, "question": question}, return_only_outputs=False)
-        response["citations"] = get_citations(response)
-        response["output_text"] = re.sub(r'^SOURCES:.*$', '', response["output_text"], flags=re.MULTILINE)
+        print ("model version: ", self.model_version)
+        with get_openai_callback() as cb:
+            question = question + "Try to summarise your answer in a list. Make sure each item in a list is in as many details as possible, but does not have overlap content."
+            response = chain({"input_documents": all_docs, "question": question}, return_only_outputs=False)
+            response["citations"] = get_citations(response)
+            response["output_text"] = re.sub(r'^SOURCES:.*$', '', response["output_text"], flags=re.MULTILINE)
+            
+            # log token details
+            print(f"Prompt Tokens: {cb.prompt_tokens}")
+            print(f"Completion Tokens: {cb.completion_tokens}")
+            log_token_details_to_file(cb.prompt_tokens, cb.completion_tokens, self.model_version)
+
 
         return response
