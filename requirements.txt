@@ -12,7 +12,7 @@ importlib_metadata
 ipython
 ipywidgets
 Jinja2
-jnius
+pyjnius
 keyring
 langchain
 lockfile
@@ -24,7 +24,7 @@ openai
 ordereddict
 pdf2image
 Pillow
-pinecone
+pinecone-client
 protobuf
 pyOpenSSL
 PyPDF2
@@ -37,6 +37,5 @@ toml
 tornado
 tqdm
 urllib3_secure_extra
-xmlrpclib
 zipp
 zstandard
