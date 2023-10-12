@@ -55,17 +55,22 @@ class ingest_graph:
         driver.close()
         
         def get_node_vectors(set_data, info_type):
-            return [
-                {
-                    "value": embeddings.embed_documents([n]),
-                    "meta_data": {
-                        "source":source_name,
-                        "info_type": info_type,
-                        "text":n
-                    },
-                } 
-                for n in set_data
-            ]
+            node_vector_list = []
+            for n in set_data:
+                try:
+                    embedded_value = embeddings.embed_documents([n])
+                    node_vector_list.append({
+                        "value": embedded_value,
+                        "meta_data": {
+                            "source": source_name,
+                            "info_type": info_type,
+                            "text": n
+                        }
+                    })
+                except Exception as e:
+                    print(f"Error embedding node {n}: {e}")
+                    continue
+            return node_vector_list
 
         node_names = {p_n["start_node_name"] for p_n in pairs_of_nodes}.union(
                     {p_n["end_node_name"] for p_n in pairs_of_nodes})
