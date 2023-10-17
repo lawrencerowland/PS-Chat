@@ -100,7 +100,7 @@ class QueryDocs():
 
         vectorstore = Pinecone(self.index , self.embeddings.embed_query, text_key, namespace=my_namespace)
         llm = ChatOpenAI(model=self.model_version ,temperature=0)
-        doc_chain = load_qa_with_sources_chain(llm, chain_type="map_reduce")
+        doc_chain = load_qa_with_sources_chain(llm, chain_type="stuff")
         question_generator = LLMChain(llm=llm, prompt=CONDENSE_QUESTION_PROMPT)
         question = question + "Summarize your answer in a list. Ensure that each item is detailed but without overlapping content."
 
