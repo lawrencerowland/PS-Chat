@@ -1,5 +1,6 @@
 
 from langchain.chat_models import ChatOpenAI
+import json
 
 
 
@@ -38,3 +39,20 @@ def question_with_history (question, chat_history):
     print ('the updated quesion is ' , updated_question)
 
     return updated_question
+
+
+
+def save_tuples_to_json(tuples_list, filename):
+    # Convert list of tuples to list of lists
+    lists_list = [list(t) for t in tuples_list]
+
+    with open(filename, 'w') as file:
+        json.dump(lists_list, file)
+
+def load_tuples_from_json(filename):
+    with open(filename, 'r') as file:
+        lists_list = json.load(file)
+
+    # Convert list of lists back to list of tuples
+    tuples_list = [tuple(l) for l in lists_list]
+    return tuples_list

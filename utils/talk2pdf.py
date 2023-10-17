@@ -9,11 +9,25 @@ from langchain.indexes.graph import NetworkxEntityGraph
 import re
 from langchain.callbacks import get_openai_callback
 from utils.count_tokens import log_token_details_to_file
+from langchain.chains import ConversationalRetrievalChain
+from langchain.chains import LLMChain
+from langchain.chains.conversational_retrieval.prompts import CONDENSE_QUESTION_PROMPT
+
+
 
 def get_citations(response):
     citations = []
     idx = 1
     for d in response["input_documents"]:
+        cited_text = "<b>" + f"[{idx}] File Name of Source: " + d.metadata["source"] + "</b>" + "<br>" + d.page_content
+        citations.append (cited_text)
+        idx+=1
+    return citations
+
+def get_citations_v2(response):
+    citations = []
+    idx = 1
+    for d in response["source_documents"]:
         cited_text = "<b>" + f"[{idx}] File Name of Source: " + d.metadata["source"] + "</b>" + "<br>" + d.page_content
         citations.append (cited_text)
         idx+=1
@@ -80,5 +94,31 @@ class QueryDocs():
             print(f"Completion Tokens: {cb.completion_tokens}")
             log_token_details_to_file(cb.prompt_tokens, cb.completion_tokens, self.model_version)
 
+        return response
 
+    def qa_pdf_with_conversational_chain (self, question, chat_history, my_namespace="unilever", text_key="text", topK=10):
+
+        vectorstore = Pinecone(self.index , self.embeddings.embed_query, text_key, namespace=my_namespace)
+        llm = ChatOpenAI(model=self.model_version ,temperature=0)
+        doc_chain = load_qa_with_sources_chain(llm, chain_type="map_reduce")
+        question_generator = LLMChain(llm=llm, prompt=CONDENSE_QUESTION_PROMPT)
+        question = question + "Summarize your answer in a list. Ensure that each item is detailed but without overlapping content."
+
+        chain = ConversationalRetrievalChain(
+                    retriever=vectorstore.as_retriever(),
+                    question_generator=question_generator,
+                    combine_docs_chain=doc_chain,
+                    return_source_documents=True
+                )
+
+        with get_openai_callback() as cb:
+            print ("input chat_history: ", chat_history)
+            response = chain({"question": question, "chat_history": chat_history})
+            response["output_text"] = response["answer"]
+            response["citations"] = get_citations_v2(response)
+            
+            # log token details
+            print(f"Prompt Tokens: {cb.prompt_tokens}")
+            print(f"Completion Tokens: {cb.completion_tokens}")
+            log_token_details_to_file(cb.prompt_tokens, cb.completion_tokens, self.model_version)
         return response

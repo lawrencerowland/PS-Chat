@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import os
 import ast
 from utils.get_doc_info import get_files, get_namespaces, get_questions
-from utils.combine_chat_history import question_with_history
+from utils.combine_chat_history import save_tuples_to_json, load_tuples_from_json
 import random
 import string
 
@@ -29,13 +29,16 @@ graph_namespace = os.getenv('PINECONE_GRAPH_NAMESPACE')
 
 pdf_doc_dir = os.getenv('PDF_DOC_DIR')
 
-def get_response_from_pdf(question, pdf_namespaces):
+CHAT_HISTORY_FILE = "chat_history.json"
+
+
+def get_response_from_pdf(question, pdf_namespaces, chat_history=[]):
 	QD = QueryDocs(pinecone_api_key, pinecone_env_name, pinecone_index_name)
-	response_answer = QD.qa_pdf_with_citations_from_multiple_srcs(question, pdf_namespaces)
-	return {
-		"text": response_answer["output_text"].replace("\n", "<br>"),
-		"source": response_answer["citations"]
-	}
+	response_answer = QD.qa_pdf_with_conversational_chain(question, chat_history, pdf_namespaces[0])
+	response_answer["text"] = response_answer["output_text"].replace("\n", "<br>")
+	response_answer["source"] = response_answer["citations"]
+	
+	return response_answer
 
 def get_response_from_graph(question):
 	try:
@@ -55,6 +58,10 @@ def home():
 	files = {}
 	namespaces = []
 	questions = {}
+
+	# initialise chat history
+	with open(CHAT_HISTORY_FILE, 'w') as file:
+		json.dump([], file)
 
 	## If there are is a docs folder, use files within to to populate Source Selection, Document Display and Example Questions
 	if os.path.isdir('./docs'):
@@ -84,11 +91,14 @@ def home():
 @app.route('/get', methods=['POST'])
 def get_bot_response():
 	question = request.form.get('msg')
-	if "chat_history" not in session:
-		session["chat_history"] = []
-	print ('history length', len(session["chat_history"]))
-	if len (session["chat_history"]) > 0:
-		question = question_with_history(question, session["chat_history"])
+	try:
+		chat_history = load_tuples_from_json(CHAT_HISTORY_FILE)
+	except FileNotFoundError:
+		# create a new file
+		with open(CHAT_HISTORY_FILE, 'w') as file:
+			json.dump([], file)
+
+	print ('history length', len(chat_history))
 
 	# get all parameters
 	pdf_namespaces = ast.literal_eval(request.form.get('namespace'))
@@ -103,21 +113,26 @@ def get_bot_response():
 	# valid chat mode
 	response = {"Answer": {}}
 	if chat_mode=="PDF":
-		response['Answer'] = get_response_from_pdf(question, pdf_namespaces)
+		response_pdf = get_response_from_pdf(question, pdf_namespaces, chat_history)
+		response['Answer']["text"] = response_pdf["output_text"].replace("\n", "<br>")
+		response["Answer"]["source"] = response_pdf["citations"]
+
+
 	elif chat_mode=="Graph":
 		response['Answer']['text'] = get_response_from_graph(question)
+
 	else:
 		response_graph = get_response_from_graph(question)
-		response_pdf = get_response_from_pdf(question, pdf_namespaces)
+		response_pdf = get_response_from_pdf(question, pdf_namespaces, chat_history)
 		response_all = f"<b>\n Response from graph: </b> \n {response_graph} <br> <b>Response from pdf: </b> {response_pdf['text']}"
 		
 		response["Answer"]["text"] = response_all
 		response["Answer"]["source"] = response_pdf["source"]
 	
-	chat_history_per_round = ["Historical Question: " + question + '\n' +"Historical Answer: " + response["Answer"]["text"] + '\n']
-	session["chat_history"].append(chat_history_per_round)
-	session.modified = True  # Mark the session as modified
-	print (session["chat_history"])
+	chat_history_per_round = (question, response["Answer"]["text"].replace("<br>", " "))
+	chat_history.append(chat_history_per_round)
+
+	save_tuples_to_json(chat_history, CHAT_HISTORY_FILE)
 
 	return jsonify(response)
 
