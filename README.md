@@ -67,6 +67,8 @@ python ingest_data.py
 ## 3.b: Create document structure
 This function will create a client_doc_structure.json file in the ./data folder. The UI will populate the Source Selection, Document Display and Questions sections with this data. If there are files locally in the ./docs folder, these will be used instead.
 
+## 3.c: Put 'title_url_mapping.json' into ./data folder (Optional)
+This approach show your the url instead of pdf document.
 
 # Step 4. Launch your app
 After ingesting your data, simply run main.py for local deployment and debugging.

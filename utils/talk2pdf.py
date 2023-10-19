@@ -12,7 +12,16 @@ from utils.count_tokens import log_token_details_to_file
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chains import LLMChain
 from langchain.chains.conversational_retrieval.prompts import CONDENSE_QUESTION_PROMPT
+import json
+import os
+import re
 
+def remove_sources(text):
+    pattern = re.compile(r'\b(SOURCES?:\s?.*\.(pdf|txt))', re.IGNORECASE)
+    match = pattern.search(text)
+    if match:
+        text = text[:match.start()]
+    return text.strip()
 
 
 def get_citations(response):
@@ -28,7 +37,25 @@ def get_citations_v2(response):
     citations = []
     idx = 1
     for d in response["source_documents"]:
-        cited_text = "<b>" + f"[{idx}] File Name of Source: " + d.metadata["source"] + "</b>" + "<br>" + d.page_content
+        try:
+            current_directory = os.path.dirname(os.path.abspath(__file__))
+            url_mapping_path = os.path.join(current_directory, '..', 'data', 'title_url_mapping.json')
+            with open (url_mapping_path) as f:
+                title_url_mapping = json.load(f)
+        except:
+            print ("No title_url_mapping.json found")
+            pass
+        
+        source_text = d.metadata["source"]
+        try:
+            dict_key = d.metadata["source"].split("./")[1]
+            source_text = title_url_mapping[dict_key]
+            print ("dict_key: ", dict_key)
+        except:
+            print ("No dict_key found")
+            pass
+        
+        cited_text = "<b>" + f"[{idx}] File Name of Source: " + source_text + "</b>" + "<br>" + d.page_content
         citations.append (cited_text)
         idx+=1
     return citations
@@ -115,6 +142,11 @@ class QueryDocs():
             print ("input chat_history: ", chat_history)
             response = chain({"question": question, "chat_history": chat_history})
             response["output_text"] = response["answer"]
+            try:
+                response["output_text"] = remove_sources(response["output_text"])
+            except:
+                pass
+
             response["citations"] = get_citations_v2(response)
             
             # log token details
