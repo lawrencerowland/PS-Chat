@@ -47,15 +47,19 @@ def get_citations_v2(response):
             pass
         
         source_text = d.metadata["source"]
+        IF_SOURCE_IS_URL = False
         try:
             dict_key = d.metadata["source"].split("./")[1]
             source_text = title_url_mapping[dict_key]
+            IF_SOURCE_IS_URL = True
             print ("dict_key: ", dict_key)
         except:
             print ("No dict_key found")
             pass
         
-        cited_text = "<b>" + f"[{idx}] File Name of Source: " + source_text + "</b>" + "<br>" + d.page_content
+        cited_text = "<b>"  + source_text + "</b>" + "<br>" + d.page_content
+        if IF_SOURCE_IS_URL:
+            cited_text = "<b><a href='" + source_text + "'>" + source_text + "</a></b><br>" + d.page_content;
         citations.append (cited_text)
         idx+=1
     return citations

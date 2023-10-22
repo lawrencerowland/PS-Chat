@@ -4,10 +4,10 @@ from fpdf import FPDF
 from urllib.parse import urljoin, urlparse
 import json
 import os
-
+from tqdm import tqdm
 # User-inputted variables
 base_url = "https://www.praxisframework.org/en/"  # Base URL of the website to extract child pages
-output_directory = "docs/Praxis/"  # Output directory for PDF files
+output_directory = "docs/Praxis_test/"  # Output directory for PDF files
 string_to_remove = "/en/"  # Specify the string to remove
 
 # Function to extract text from a specific HTML element by ID
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     pdf_url_mapping = {}
 
     if child_page_urls:
-        for child_url in child_page_urls:
+        for child_url in tqdm(child_page_urls):
             response = requests.get(child_url)
             if response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'html.parser')
