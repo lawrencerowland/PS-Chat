@@ -15,13 +15,14 @@ from langchain.chains.conversational_retrieval.prompts import CONDENSE_QUESTION_
 import json
 import os
 import re
+from utils.custom_chain import CustomConversationalRetrievalChain
 
 def remove_sources(text):
-    pattern = re.compile(r'\b(SOURCES?:\s?.*\.(pdf|txt))', re.IGNORECASE)
-    match = pattern.search(text)
-    if match:
-        text = text[:match.start()]
-    return text.strip()
+    pattern = re.compile(r'\b(SOURCES:.*$)', re.IGNORECASE | re.DOTALL)
+    
+    cleaned_text = pattern.sub('', text)
+    
+    return cleaned_text.strip()
 
 
 def get_citations(response):
@@ -63,6 +64,18 @@ def get_citations_v2(response):
         citations.append (cited_text)
         idx+=1
     return citations
+
+def sorted_doc(all_docs, all_scores, topK=5):
+    paired_results = list(zip(all_docs, all_scores))
+    sorted_pairs = sorted(paired_results, key=lambda x: x[1], reverse=True)
+    thresholds = [i * 0.05 for i in range(16, -1, -1)]
+    filtered_pairs = []
+    for threshold in thresholds:
+        filtered_pairs = [pair for pair in sorted_pairs if pair[1] > threshold]
+        if len(filtered_pairs) > 0:
+            break  # Exit the loop once we have non-empty results
+    topK_docs = [pair[0] for pair in filtered_pairs[:topK]]
+    return topK_docs
 
 class QueryDocs():
     def __init__(self,
@@ -112,7 +125,7 @@ class QueryDocs():
                 if len(doc.page_content) > 200: # filter out short documents
                     all_docs.append(doc)
 
-        chain = load_qa_with_sources_chain(ChatOpenAI(model=self.model_version ,temperature=0), chain_type="stuff")
+        chain = load_qa_with_sources_chain(ChatOpenAI(model=self.model_version,temperature=0), chain_type="stuff")
         print ("model version: ", self.model_version)
         with get_openai_callback() as cb:
             question = question + "Try to summarise your answer in a list. Make sure each item in a list is in as many details as possible, but does not have overlap content."
@@ -127,21 +140,38 @@ class QueryDocs():
 
         return response
 
-    def qa_pdf_with_conversational_chain (self, question, chat_history, my_namespace="unilever", text_key="text", topK=10):
-
+    def qa_pdf_with_conversational_chain (self, question, chat_history, my_namespace=["unilever"], text_key="text", topK=10):
+        print ("my namespace: ", my_namespace)
+               
         vectorstore = Pinecone(self.index , self.embeddings.embed_query, text_key, namespace=my_namespace)
         llm = ChatOpenAI(model=self.model_version ,temperature=0)
+        qllm = ChatOpenAI(model='gpt-4' ,temperature=0)
         doc_chain = load_qa_with_sources_chain(llm, chain_type="stuff")
-        question_generator = LLMChain(llm=llm, prompt=CONDENSE_QUESTION_PROMPT)
-        question = question + "Summarize your answer in a list. Ensure that each item is detailed but without overlapping content."
+        
+        question_generator = LLMChain(llm=qllm, prompt=CONDENSE_QUESTION_PROMPT)
+        question = question + 'Requiremnt of answer: Please group your final answer in a list format if necessary and explain each item in as many details as possible, but does not have overlap content.'
+        
+        all_docs = []
+        all_scores = []
+        for namespace in my_namespace:
+            vectorstore = Pinecone(self.index, self.embeddings.embed_query, text_key, namespace=namespace)
+            docs = vectorstore.similarity_search(question, k=topK)
+            search_result = vectorstore.similarity_search_with_score (question, k=topK)
+            for s in search_result:
+                doc = s[0]
+                score = s[1]
+                all_docs.append(doc)
+                all_scores.append(score)
 
-        chain = ConversationalRetrievalChain(
+        ref_docs = sorted_doc(all_docs, all_scores, topK)
+        chain = CustomConversationalRetrievalChain(
                     retriever=vectorstore.as_retriever(),
                     question_generator=question_generator,
                     combine_docs_chain=doc_chain,
-                    return_source_documents=True
+                    return_source_documents=True,
                 )
-
+        chain.set_input_docs(ref_docs)
+        
         with get_openai_callback() as cb:
             print ("input chat_history: ", chat_history)
             response = chain({"question": question, "chat_history": chat_history})
@@ -150,7 +180,7 @@ class QueryDocs():
                 response["output_text"] = remove_sources(response["output_text"])
             except:
                 pass
-
+            print ("response: ", response["output_text"])
             response["citations"] = get_citations_v2(response)
             
             # log token details

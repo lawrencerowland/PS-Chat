@@ -34,7 +34,7 @@ CHAT_HISTORY_FILE = "chat_history.json"
 
 def get_response_from_pdf(question, pdf_namespaces, chat_history=[]):
 	QD = QueryDocs(pinecone_api_key, pinecone_env_name, pinecone_index_name)
-	response_answer = QD.qa_pdf_with_conversational_chain(question, chat_history, pdf_namespaces[0])
+	response_answer = QD.qa_pdf_with_conversational_chain(question, chat_history, pdf_namespaces)
 	response_answer["text"] = response_answer["output_text"].replace("\n", "<br>")
 	response_answer["source"] = response_answer["citations"]
 	
