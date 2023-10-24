@@ -65,7 +65,7 @@ def get_citations_v2(response):
         idx+=1
     return citations
 
-def sorted_doc(all_docs, all_scores, topK=5):
+def sorted_doc(all_docs, all_scores):
     paired_results = list(zip(all_docs, all_scores))
     sorted_pairs = sorted(paired_results, key=lambda x: x[1], reverse=True)
     topK_docs = [pair[0] for pair in sorted_pairs]
@@ -154,11 +154,11 @@ class QueryDocs():
             for s in search_result:
                 doc = s[0]
                 score = s[1]
-                if score >= 0.85:
+                if score >= 0.8:
                     all_docs.append(doc)
                     all_scores.append(score)
 
-        ref_docs = sorted_doc(all_docs, all_scores, topK)
+        ref_docs = sorted_doc(all_docs, all_scores)
         chain = CustomConversationalRetrievalChain(
                     retriever=vectorstore.as_retriever(),
                     question_generator=question_generator,

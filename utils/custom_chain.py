@@ -11,6 +11,7 @@ class CustomConversationalRetrievalChain(ConversationalRetrievalChain):
         return self.input_docs
 
     def set_input_docs(self, input_docs):
-        self.input_docs = input_docs
+        if len (input_docs) > 0:
+            self.input_docs = input_docs
 
     
