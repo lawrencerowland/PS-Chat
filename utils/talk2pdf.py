@@ -176,7 +176,8 @@ class QueryDocs():
             except:
                 pass
             print ("response: ", response["output_text"])
-            response["citations"] = get_citations_v2(response)
+            if len(ref_docs)>0:
+                response["citations"] = get_citations_v2(response)
             
             # log token details
             print(f"Prompt Tokens: {cb.prompt_tokens}")
