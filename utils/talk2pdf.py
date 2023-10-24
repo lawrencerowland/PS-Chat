@@ -18,7 +18,7 @@ import re
 from utils.custom_chain import CustomConversationalRetrievalChain
 
 def remove_sources(text):
-    pattern = re.compile(r'\b(SOURCES:.*$)', re.IGNORECASE | re.DOTALL)
+    pattern = re.compile(r'\b(SOURCE[S]?:(.*$))', re.IGNORECASE | re.DOTALL)
     
     cleaned_text = pattern.sub('', text)
     
