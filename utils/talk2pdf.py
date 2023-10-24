@@ -68,13 +68,7 @@ def get_citations_v2(response):
 def sorted_doc(all_docs, all_scores, topK=5):
     paired_results = list(zip(all_docs, all_scores))
     sorted_pairs = sorted(paired_results, key=lambda x: x[1], reverse=True)
-    thresholds = [i * 0.05 for i in range(16, -1, -1)]
-    filtered_pairs = []
-    for threshold in thresholds:
-        filtered_pairs = [pair for pair in sorted_pairs if pair[1] > threshold]
-        if len(filtered_pairs) > 0:
-            break  # Exit the loop once we have non-empty results
-    topK_docs = [pair[0] for pair in filtered_pairs[:topK]]
+    topK_docs = [pair[0] for pair in sorted_pairs]
     return topK_docs
 
 class QueryDocs():
@@ -160,8 +154,9 @@ class QueryDocs():
             for s in search_result:
                 doc = s[0]
                 score = s[1]
-                all_docs.append(doc)
-                all_scores.append(score)
+                if score >= 0.85:
+                    all_docs.append(doc)
+                    all_scores.append(score)
 
         ref_docs = sorted_doc(all_docs, all_scores, topK)
         chain = CustomConversationalRetrievalChain(
