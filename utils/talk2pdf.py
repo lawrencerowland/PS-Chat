@@ -138,12 +138,11 @@ class QueryDocs():
         print ("my namespace: ", my_namespace)
                
         vectorstore = Pinecone(self.index , self.embeddings.embed_query, text_key, namespace=my_namespace)
-        llm = ChatOpenAI(model=self.model_version ,temperature=0)
-        qllm = ChatOpenAI(model='gpt-4' ,temperature=0)
+        llm = ChatOpenAI(model=self.model_version,temperature=0)
+        qllm = ChatOpenAI(model='gpt-4',temperature=0)
         doc_chain = load_qa_with_sources_chain(llm, chain_type="stuff")
         
         question_generator = LLMChain(llm=qllm, prompt=CONDENSE_QUESTION_PROMPT)
-        question = question + 'Requiremnt of answer: Please group your final answer in a list format if necessary and explain each item in as many details as possible, but does not have overlap content.'
         
         all_docs = []
         all_scores = []
@@ -154,17 +153,25 @@ class QueryDocs():
             for s in search_result:
                 doc = s[0]
                 score = s[1]
-                if score >= 0.8:
+                if score >= 0.85:
                     all_docs.append(doc)
                     all_scores.append(score)
-
         ref_docs = sorted_doc(all_docs, all_scores)
+
+        question = question + 'Requiremnt of answer: Please group your final answer in a list format if necessary and explain each item in as many details as possible, but does not have overlap content.'
+        if len(ref_docs) == 0:
+            response = {}
+            response["output_text"] = "Sorry, I cannot find any relevant information from the documents."
+            response["citations"] = []
+            return response
+        
         chain = CustomConversationalRetrievalChain(
                     retriever=vectorstore.as_retriever(),
                     question_generator=question_generator,
                     combine_docs_chain=doc_chain,
                     return_source_documents=True,
                 )
+        
         chain.set_input_docs(ref_docs)
         
         with get_openai_callback() as cb:

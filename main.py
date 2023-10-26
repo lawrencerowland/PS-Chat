@@ -115,7 +115,8 @@ def get_bot_response():
 	if chat_mode=="PDF":
 		response_pdf = get_response_from_pdf(question, pdf_namespaces, chat_history)
 		response['Answer']["text"] = response_pdf["output_text"].replace("\n", "<br>")
-		response["Answer"]["source"] = response_pdf["citations"]
+		if len(response_pdf["citations"]) > 0:
+			response["Answer"]["source"] = response_pdf["citations"]
 
 
 	elif chat_mode=="Graph":
@@ -137,4 +138,4 @@ def get_bot_response():
 	return jsonify(response)
 
 if __name__ == "__main__":
-	app.run(host='0.0.0.0', port=8000, debug=True)
+	app.run(host='0.0.0.0', port=3000, debug=True)
