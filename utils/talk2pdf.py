@@ -136,8 +136,8 @@ class QueryDocs():
 
     def qa_pdf_with_conversational_chain (self, question, chat_history, my_namespace=["unilever"], text_key="text", topK=10):
         print ("my namespace: ", my_namespace)
-               
-        vectorstore = Pinecone(self.index , self.embeddings.embed_query, text_key, namespace=my_namespace)
+
+        vectorstore = Pinecone(self.index , self.embeddings.embed_query, text_key)
         llm = ChatOpenAI(model=self.model_version,temperature=0)
         qllm = ChatOpenAI(model='gpt-4',temperature=0)
         doc_chain = load_qa_with_sources_chain(llm, chain_type="stuff")
@@ -161,7 +161,8 @@ class QueryDocs():
         question = question + 'Requiremnt of answer: Please group your final answer in a list format if necessary and explain each item in as many details as possible, but does not have overlap content.'
         if len(ref_docs) == 0:
             response = {}
-            response["output_text"] = "Sorry, I cannot find any relevant information from the documents."
+            response["output_text"] = """Apologies, I was unable to retrieve relevant information from the documents. For more accurate results, please consider asking a more specific question. For instance, instead of inquiring, 'What does the 7th item in the list mean?', you might ask, 'What does risk response mean in your previous answer?'.
+                                      """
             response["citations"] = []
             return response
         
